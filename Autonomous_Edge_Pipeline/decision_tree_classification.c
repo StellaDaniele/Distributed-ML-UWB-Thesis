@@ -8,8 +8,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
-#include <iostream>
-#include <cstring>
+// #include <iostream>
+// #include <cstring>
+#include <stdlib.h>
+#include <string.h>
+
 #include "main.h"
 #include "dataset.h"
 #include "decision_tree_training.h"
@@ -33,7 +36,7 @@ int decision_tree_classifier(struct Node* root, float X[])
 		{
 			return root->left_class;
 		}
-		
+
 	}
 	else
 	{

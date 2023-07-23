@@ -8,8 +8,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
-#include <iostream>
-#include <cstring>
+// #include <iostream>
+// #include <cstring>
+#include <stdlib.h>
+#include <string.h>
+
 #include "main.h"
 #include "dataset.h"
 #include "decision_tree_training.h"
@@ -72,7 +75,7 @@
  * @param[in]		group             	pointer to child samples indexes (left/right)
  * @param[in]       y_train             pointer to clustering labels
  * @param[in]		size                number of samples in the current node
- * @return     The function returns the leaf node class 
+ * @return     The function returns the leaf node class
  */
 
 int counter = 1;
@@ -88,7 +91,7 @@ struct Node* split_samples(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE],
 {
 	int left_counter = 0;
 	int right_counter = 0;
-	int sample_index; 
+	int sample_index;
 
 	for(int j = 0; j < size; j++)
 	{
@@ -102,7 +105,7 @@ struct Node* split_samples(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE],
 		{
 			sample_index = group[j];
 		}
-		
+
 		if (max_samples[sample_index][feature] < threshold)
 		{
 			root->Left_group[left_counter] = sample_index;
@@ -116,7 +119,7 @@ struct Node* split_samples(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE],
 		root->left_counter = left_counter;
 		root->right_counter = right_counter;
 	}
-	
+
 	if(group != NULL)
 	{
 		return root;
@@ -178,7 +181,7 @@ struct Node* get_split(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], str
 	int left_grp[MEMORY_SIZE];
 	int right_grp[MEMORY_SIZE];
 	int sample_index;
-	
+
 	for(int i = 0; i < N_FEATURE; i++)
 	{
 		for(int j = 0; j < size; j++)
@@ -225,7 +228,7 @@ struct Node* GetNewNode()
 }
 
 struct Node* split(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], struct Node* node, int y_train[MEMORY_SIZE+UPDATE_THR], int max_depth, int min_size, int depth)
-{	
+{
 	int out;
 	if (node->left_counter == 0 || node->right_counter == 0)
 	{

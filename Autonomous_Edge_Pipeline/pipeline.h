@@ -5,8 +5,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
-#include <iostream>
-#include <cstring>
+// #include <iostream>
+// #include <cstring>
+#include <stdlib.h>
+#include <string.h>
+
 #include "main.h"
 #include "dataset.h"
 

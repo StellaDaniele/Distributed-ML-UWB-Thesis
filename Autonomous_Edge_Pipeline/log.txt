@@ -1,0 +1,89 @@
+Training set size: 200
+Testinig set size: 154
+
+* k-means clustering:
+
+	- Number of clusters: 2
+	- Maximum number of iterations: 50
+
+* Decision Tree classifier: 
+
+	- Max Depth: 3
+	- Min Size: 10
+
+* Pipeline:
+
+	- Memory size: 200
+	- Initial threshold size: 50
+	- Update threshold: 100
+	- Filtering strategy: CONF
+
+^ k-means: 
+
+	- Centroids stopped changing at iteration: 3
+^ k-means: 
+
+	- Final Centroids are: 
+	[	110.527779	27.222221	32.765282	30.583334	]
+	[	174.071426	29.428572	33.614285	39.642857	]
+
+^ Decision Tree:
+
+	- Number of samples correctly classified using the Decision Tree: 103
+	- Accuracy: 66.88%
+
+^ k-means: 
+
+	- Final Centroids are: 
+	[	121.075859	28.062069	32.751732	32.793102	]
+	[	298.904755	48.428570	56.052380	66.000000	]
+
+^ Decision Tree:
+
+	- Number of samples correctly classified using the Decision Tree: 103
+	- Accuracy: 82.47%
+
+^ k-means: 
+
+	- Final Centroids are: 
+	[	103.463852	26.765060	31.354816	30.915663	]
+	[	155.972229	31.000000	35.575691	38.513889	]
+
+^ Decision Tree:
+
+	- Number of samples correctly classified using the Decision Tree: 122
+	- Accuracy: 79.22%
+
+^ k-means: 
+
+	- Final Centroids are: 
+	[	161.625000	29.500000	34.555679	37.034092	]
+	[	100.919601	26.552763	31.347990	30.291458	]
+
+^ Decision Tree:
+
+	- Number of samples correctly classified using the Decision Tree: 123
+	- Accuracy: 79.87%
+
+^ k-means: 
+
+	- Final Centroids are: 
+	[	100.982376	26.383261	31.303308	30.123348	]
+	[	160.958908	30.260275	35.721912	39.178082	]
+
+^ Decision Tree:
+
+	- Number of samples correctly classified using the Decision Tree: 123
+	- Accuracy: 79.87%
+
+^ k-means: 
+
+	- Final Centroids are: 
+	[	101.571426	26.222689	30.989071	30.138655	]
+	[	161.290329	29.161291	35.267742	37.854839	]
+
+^ Decision Tree:
+
+	- Number of samples correctly classified using the Decision Tree: 125
+	- Accuracy: 81.17%
+

@@ -3,11 +3,11 @@
 #include "main.h"
 #include "kmeans.h"
 #include "dataset.h"
-#include "decision_tree_training.h"
+// #include "decision_tree_training.h"
 #include "pipeline.h"
 #include "test.h"
 #include "KNN_classification.h"
-#include "decision_tree_classification.h"
+// #include "decision_tree_classification.h"
 #include "time.h"
 
 float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE];
@@ -57,8 +57,8 @@ int main()
     fprintf(fptr, "* k-means clustering:\n\n");
     fprintf(fptr, "\t- Number of clusters: %d\n", K);
     fprintf(fptr, "\t- Maximum number of iterations: %d\n\n", ITERATION);
-    
-    #ifdef AutoDT 
+
+    #ifdef AutoDT
     fprintf(fptr, "* Decision Tree classifier: \n\n");
     fprintf(fptr, "\t- Max Depth: %d\n", MAX_DEPTH);
     fprintf(fptr, "\t- Min Size: %d\n\n", MIN_SIZE);
@@ -83,11 +83,11 @@ int main()
    counter = n_samples;
 
     while (1)
-    {   
+    {
         n_samples = kmeans(max_samples, centroids, weights, y_train, n_samples);
 
         if(n_samples > MEMORY_SIZE)
-        {               
+        {
             #ifdef CONF
             int indices[MEMORY_SIZE + UPDATE_THR];
 
@@ -117,7 +117,7 @@ int main()
             random_func(idx_to_replace);
             for(int i = 0; i < (n_samples - MEMORY_SIZE); i++)
             {
-                for(int j = 0; j < N_FEATURE; j++)  
+                for(int j = 0; j < N_FEATURE; j++)
                 {
                     max_samples[idx_to_replace[i]][j] = max_samples[MEMORY_SIZE + i][j];
                 }
@@ -126,12 +126,12 @@ int main()
             n_samples = MEMORY_SIZE;
             #endif
         }
-
-        struct Node* root = (struct Node*)realloc(NULL, sizeof(struct Node));
         #ifdef AutoDT
+        struct Node* root = (struct Node*)realloc(NULL, sizeof(struct Node));
+
         decision_tree_training(max_samples, root, y_train, n_samples);
         #endif
-    
+
         for(int j = 0; j < N_TEST; j++)
         {
             #ifdef AutoKNN
@@ -141,7 +141,7 @@ int main()
             #ifdef AutoDT
             pred_class = decision_tree_classifier(root, X_test[j]);
             #endif
-            
+
             pred_class_perm = 1 - pred_class;
 
             if(pred_class == y_test[j])
@@ -186,9 +186,10 @@ int main()
         }
         else
         {
-            n_samples = pipeline(max_samples, root, y_train, n_samples, counter);
+            // n_samples = pipeline(max_samples, root, y_train, n_samples, counter);
+            n_samples = pipeline(max_samples, y_train, n_samples, counter);
         }
-        
+
         if(counter - INITIAL_THR == MEMORY_SIZE)
         {
             increment = INITIAL_THR;
@@ -197,14 +198,14 @@ int main()
         {
             increment += UPDATE_THR;
         }
-        
+
     }
 }
 
 
 void quicksort_idx(int y_train[MEMORY_SIZE+UPDATE_THR], int indices[MEMORY_SIZE + UPDATE_THR], int first, int last){
    int i, j, pivot, temp;
-   
+
    if(first>=MEMORY_SIZE){
        return;
    }// Avoid useless computation, as the other samples will be cut
@@ -229,7 +230,7 @@ void quicksort_idx(int y_train[MEMORY_SIZE+UPDATE_THR], int indices[MEMORY_SIZE 
         temp=indices[pivot];
         indices[pivot]=indices[j];
         indices[j]=temp;
-        
+
       quicksort_idx(y_train, indices,first,j-1);
       quicksort_idx(y_train, indices,j+1,last);
 
@@ -273,23 +274,23 @@ int update_mem(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], int indices
 
 int* random_func(int idx_to_replace[])
 {
-    /* The algorithm works as follows: iterate through all numbers from 1 to N and select the 
-    * current number with probability rm / rn, where rm is how many numbers we still need to find, 
+    /* The algorithm works as follows: iterate through all numbers from 1 to N and select the
+    * current number with probability rm / rn, where rm is how many numbers we still need to find,
     * and rn is how many numbers we still need to iterate through */
     int in, im;
     im = 0;
     time_t t;
     srand((unsigned) time(&t));
 
-    for (in = 0; in < MEMORY_SIZE && im < UPDATE_THR; ++in) 
+    for (in = 0; in < MEMORY_SIZE && im < UPDATE_THR; ++in)
     {
         int rn = MEMORY_SIZE - in;
         int rm = UPDATE_THR - im;
-        if (rand() % rn < rm) 
-        {   
+        if (rand() % rn < rm)
+        {
             /* Take it */
             idx_to_replace[im++] = in;
         }
     }
-    return idx_to_replace; 
+    return idx_to_replace;
 }

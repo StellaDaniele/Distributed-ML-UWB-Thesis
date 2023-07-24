@@ -16,14 +16,14 @@
 #include "dataset.h"
 #include "pipeline.h"
 #include "KNN_classification.h"
-#include "decision_tree_training.h"
-#include "decision_tree_classification.h"
+// #include "decision_tree_training.h"
+// #include "decision_tree_classification.h"
 
 /**
  * @brief pipeline
  * @param[in]       max_samples         pointer to data samples
- * @param[in]       root                decision tree root node  
- * @param[in]       y_train             pointer to labels resulting from clustering 
+ * @param[in]       root                decision tree root node
+ * @param[in]       y_train             pointer to labels resulting from clustering
  * @param[in]       n_samples           number of samples
  * @param[in]       counter             counter to keep track of the total number of samples at each step
  * @return     The function returns the new number of samples for the next iteration (n_samples)
@@ -32,7 +32,8 @@
 
 int pred_class;
 
-int pipeline(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], struct Node* root, int y_train[MEMORY_SIZE+UPDATE_THR], int n_samples, int counter)
+// int pipeline(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], struct Node* root, int y_train[MEMORY_SIZE+UPDATE_THR], int n_samples, int counter)
+int pipeline(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], int y_train[MEMORY_SIZE+UPDATE_THR], int n_samples, int counter)
 {
     for(int i = 0; i < UPDATE_THR; i++)
     {

@@ -6,10 +6,10 @@
 /* one-shot Implementation*/
 // #define ONE_SHOT
 
-#define AutoDT
-// #define AutoKNN
+// #define AutoDT
+#define AutoKNN
 
-// How likely each data point belong to each cluster. 
+// How likely each data point belong to each cluster.
 #define CONFIDENCE
 
 /* FILTERING STRATEGY */

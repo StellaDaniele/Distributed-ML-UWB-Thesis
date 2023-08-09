@@ -13,8 +13,10 @@
 #include "main.h"
 #include "dataset.h"
 
+#ifndef SIMULATION
 #define INITIAL_THR 50
 #define UPDATE_THR 100
 #define MEMORY_SIZE 200
+#endif
 
 #endif

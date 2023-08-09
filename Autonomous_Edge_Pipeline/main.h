@@ -8,14 +8,15 @@
 #include "dataset.h"
 #include "test.h"
 
+// How likely each data point belong to each cluster.
+#define CONFIDENCE
+
+#ifndef SIMULATION
 /* one-shot Implementation*/
-// #define ONE_SHOT
+#define ONE_SHOT
 
 // #define AutoDT
 #define AutoKNN
-
-// How likely each data point belong to each cluster.
-#define CONFIDENCE
 
 /* FILTERING STRATEGY */
 
@@ -33,6 +34,12 @@
 #ifdef RANDOM
 #define FILTER "RANDOM"
 #endif
+
+#define NODE_OFFSET 100
+#define SETTINGS "log"
+#endif
+
+extern char* log_file_name;
 
 int kmeans(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids[K][N_FEATURE], float weights[MEMORY_SIZE][K], int *y_train, int max);
 // struct Node* decision_tree_training(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], struct Node* root, int y_train[MEMORY_SIZE+UPDATE_THR], int size);

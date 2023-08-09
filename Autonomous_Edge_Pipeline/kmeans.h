@@ -14,9 +14,11 @@
 #include "dataset.h"
 #include "pipeline.h"
 
+#ifndef SIMULATION
 #define K 2
 #define ITERATION 50
 #define CONFIDENCE_THR 0.9
+#endif
 
 void initial_centroids(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids[K][N_FEATURE], int n_samples);
 int clustering(float X[], float centroids[K][N_FEATURE], float weights[MEMORY_SIZE][K], int samples_per_cluster[], int index);

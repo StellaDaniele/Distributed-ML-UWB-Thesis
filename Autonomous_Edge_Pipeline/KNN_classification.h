@@ -15,7 +15,9 @@
 #include "kmeans.h"
 #include "pipeline.h"
 
+#ifndef SIMULATION
 #define K_NEIGHBOR 5
+#endif
 
 struct neighbour
 {

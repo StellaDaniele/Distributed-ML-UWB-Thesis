@@ -15,6 +15,7 @@ int y_train[MEMORY_SIZE+UPDATE_THR];
 float centroids[K][N_FEATURE];
 float weights[MEMORY_SIZE+UPDATE_THR][K];
 
+char* log_file_name = "log_"SETTINGS".txt";
 
 int main()
 {
@@ -32,7 +33,7 @@ int main()
     {
         for(int j = 0; j < N_FEATURE; j++)
         {
-            max_samples[i][j] = X_train[i][j];
+            max_samples[i][j] = X_train[i+NODE_OFFSET][j];
         }
     }
 
@@ -44,14 +45,14 @@ int main()
     {
         for(int j = 0; j < N_FEATURE; j++)
         {
-            max_samples[i][j] = X_train[i][j];
+            max_samples[i][j] = X_train[i+NODE_OFFSET][j];
         }
     }
     #endif
 
     /* Save info into log file */
     FILE *fptr;
-    fptr = fopen("log.txt", "w");
+    fptr = fopen(log_file_name, "w");
     fprintf (fptr, "Training set size: %d\n", MEMORY_SIZE);
     fprintf (fptr, "Testinig set size: %d\n\n", N_TEST);
     fprintf(fptr, "* k-means clustering:\n\n");
@@ -80,7 +81,7 @@ int main()
     counter to know how much samples I need before going to pipeline because we have limited number
     of samples in the dataset (different than a real reading from sensors scenario)
     */
-   counter = n_samples;
+    counter = n_samples;
 
     while (1)
     {
@@ -158,7 +159,7 @@ int main()
             acc = acc_perm;
         }
 
-        fptr = fopen("log.txt", "a");
+        fptr = fopen(log_file_name, "a");
         #ifdef AutoDT
         fprintf (fptr, "^ Decision Tree:\n\n");
         fprintf (fptr, "\t- Number of samples correctly classified using the Decision Tree: %0.0f\n", acc);

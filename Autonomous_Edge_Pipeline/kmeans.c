@@ -23,7 +23,7 @@
  * @param[in, out]  y_train             pointer to clustering labels
  * @param[in]       weights             pointer to the confidence weights
  * @param[in]       n_samples           number of samples
- * The function fills y_train with the labels resulting from clustering 
+ * The function fills y_train with the labels resulting from clustering
  * and return the new number of samples (changed due to confidence that removes unwanted samples)
  */
 
@@ -80,7 +80,7 @@ int kmeans(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids
     FILE *fptr;
     int counter = 0;
     initial_centroids(max_samples, centroids, n_samples);
-    
+
     /* RUN KMEANS FOR ITERATION TIMES UNTIL NO FURTHER CHANGE IN RESULTS*/
     for (int iteration = 0; iteration < ITERATION; iteration++)
     {
@@ -92,7 +92,7 @@ int kmeans(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids
             update_cluster_assignment(max_samples[j], cluster);
         }
 
-        /* Copy centroids elements to centroids to compare */ 
+        /* Copy centroids elements to centroids to compare */
         for(int i = 0; i < K; i++)
         {
             for(int k = 0; k < N_FEATURE; k++)
@@ -101,7 +101,7 @@ int kmeans(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids
             }
         }
         update_centroids(centroids, samples_per_cluster);
-        
+
         /* Stop the algorithm when the centroids of the newly formed clusters stop changing (centroids = prev_centroids).
         We made an update to the stoping criterion by checking twice that centroids are equal to prev_centroids. */
         is_equal = memcmp(centroids, prev_centroids, sizeof(prev_centroids));
@@ -110,26 +110,26 @@ int kmeans(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids
             stop++;
             if(stop == 2)
             {
-                fptr = fopen("log.txt", "a");
+                fptr = fopen(log_file_name, "a");
                 fprintf(fptr, "^ k-means: \n\n");
                 fprintf(fptr, "\t- Centroids stopped changing at iteration: %d\n", iteration);
                 fclose(fptr);
                 break;
-            }   
+            }
         }
 
         /* AFTER EACH ITERATION RESET cluster_assignment TO ZERO */
-        memset(cluster_assignment, 0, sizeof(cluster_assignment)); 
+        memset(cluster_assignment, 0, sizeof(cluster_assignment));
     }
-    
+
     #ifdef CONFIDENCE
-    /* weight calculation */ 
+    /* weight calculation */
     for(int i = 0; i < n_samples; i++)
     {
         weight = 0;
         for(int j = 0; j < K; j++)
         {
-            weight += pow((1/weights[i][j]), 2); 
+            weight += pow((1/weights[i][j]), 2);
         }
         for(int k = 0; k < K; k++)
         {
@@ -160,7 +160,7 @@ int kmeans(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids
     //     printf("samples[%d][0]: %f\n", n, samples[n][0]);
     // }
 
-    fptr = fopen("log.txt", "a");
+    fptr = fopen(log_file_name, "a");
     fprintf(fptr, "^ k-means: \n\n");
     fprintf(fptr, "\t- Final Centroids are: \n");
     for(int i = 0; i < K; i++)
@@ -184,7 +184,7 @@ void initial_centroids(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], flo
     srand((unsigned) time(&t));
 
     int random = rand() % n_samples;
-    
+
     for(int i = 0; i < K; i++)
     {
         for(int j = 0; j < N_FEATURE; j++)
@@ -197,7 +197,7 @@ void initial_centroids(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], flo
         }
         /* TO CHOOSE THE OTHER CENTROIDS USE KMEANS++*/
         random = kmeans_plus_plus(max_samples, centroids, n_samples, i+1);
-    }    
+    }
 }
 
 int kmeans_plus_plus(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids[K][N_FEATURE], int n_samples, int next_centroid)
@@ -219,7 +219,7 @@ int kmeans_plus_plus(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float
             {
                 max = dist;
                 random = i;
-            } 
+            }
             dist = 0;
         }
     }
@@ -229,9 +229,9 @@ int kmeans_plus_plus(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float
 /* EACH DATA POINT IS ALLOCATED TO THE NEAREST CENTROID */
 int clustering(float X[], float centroids[K][N_FEATURE], float weights[MEMORY_SIZE][K], int samples_per_cluster[], int index)
 {
-    float y = 0; 
+    float y = 0;
     float min_distance = 1000000;
-    int cluster = 0; 
+    int cluster = 0;
 
     for (int k = 0; k < K; k++)
     {
@@ -243,14 +243,14 @@ int clustering(float X[], float centroids[K][N_FEATURE], float weights[MEMORY_SI
         weights[index][k] = y;
 
         y = sqrt(y);
-        
+
         if (y < min_distance)
         {
             min_distance = y;
             y = 0;
             cluster = k;
             continue;
-        } 
+        }
         y = 0;
     }
     samples_per_cluster[cluster] += 1;

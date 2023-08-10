@@ -25,7 +25,12 @@ struct neighbour
   float score;
 };
 
-int knn_classification(float X[], float training_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], int y_train[MEMORY_SIZE+UPDATE_THR], int n_samples);
+struct DataPoint {
+    float coords[N_FEATURE];
+    float score;
+};
+
+int knn_classification(float X[], float training_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], int y_train[MEMORY_SIZE+UPDATE_THR], int n_samples, struct DataPoint nearest_neighbors[K_NEIGHBOR]);
 int struct_cmp_by_score_dec(const void *, const void *);
 
 #endif

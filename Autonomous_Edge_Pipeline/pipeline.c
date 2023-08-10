@@ -38,7 +38,7 @@ int pipeline(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], int y_train[M
     for(int i = 0; i < UPDATE_THR; i++)
     {
         #ifdef AutoKNN
-        pred_class = knn_classification(X_train[i + counter - UPDATE_THR + NODE_OFFSET], max_samples, y_train, n_samples);
+        pred_class = knn_classification(X_train[i + counter - UPDATE_THR + NODE_OFFSET], max_samples, y_train, n_samples, NULL);
         #endif
 
         #ifdef AutoDT

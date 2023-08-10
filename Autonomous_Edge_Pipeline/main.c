@@ -53,11 +53,12 @@ int main()
     /* Save info into log file */
     FILE *fptr;
     fptr = fopen(log_file_name, "w");
-    fprintf (fptr, "Training set size: %d\n", MEMORY_SIZE);
-    fprintf (fptr, "Testinig set size: %d\n\n", N_TEST);
-    fprintf(fptr, "* k-means clustering:\n\n");
-    fprintf(fptr, "\t- Number of clusters: %d\n", K);
-    fprintf(fptr, "\t- Maximum number of iterations: %d\n\n", ITERATION);
+    fprintf (fptr, "{\n");
+    fprintf (fptr, "\"training_set_size\": %d,\n", MEMORY_SIZE);
+    fprintf (fptr, "\"testing_set_size\": %d,\n\n", N_TEST);
+    //fprintf(fptr, "* k-means clustering:\n\n");
+    fprintf(fptr, "\"num_clusters\": %d,\n", K);
+    fprintf(fptr, "\"max_iterations\": %d,\n", ITERATION);
 
     #ifdef AutoDT
     fprintf(fptr, "* Decision Tree classifier: \n\n");
@@ -66,15 +67,15 @@ int main()
     #endif
 
     #ifdef AutoKNN
-    fprintf(fptr, "* KNN classifier:\n\n");
-    fprintf(fptr, "\t- Number of neighbors: %d\n\n", K_NEIGHBOR);
+    //fprintf(fptr, "* KNN classifier:\n\n");
+    fprintf(fptr, "\"num_neighbors\":  %d,\n", K_NEIGHBOR);
     #endif
 
-    fprintf (fptr, "* Pipeline:\n\n");
-    fprintf (fptr, "\t- Memory size: %d\n", MEMORY_SIZE);
-    fprintf (fptr, "\t- Initial threshold size: %d\n", INITIAL_THR);
-    fprintf (fptr, "\t- Update threshold: %d\n", UPDATE_THR);
-    fprintf(fptr, "\t- Filtering strategy: %s\n\n", FILTER);
+    //fprintf (fptr, "* Pipeline:\n\n");
+    fprintf (fptr, "\"memory_size\": %d,\n", MEMORY_SIZE);
+    fprintf (fptr, "\"initial_threshold\": %d,\n", INITIAL_THR);
+    fprintf (fptr, "\"update_threshold\": %d,\n", UPDATE_THR);
+    fprintf(fptr, "\"filtering_strategy\": \"%s\",\n", FILTER);
     fclose(fptr);
 
     /*
@@ -133,12 +134,36 @@ int main()
         decision_tree_training(max_samples, root, y_train, n_samples);
         #endif
 
+        struct DataPoint datapoint[K_NEIGHBOR];
+        fptr = fopen(log_file_name, "a");
+        fprintf (fptr, "\"test_data\": [\n");
         for(int j = 0; j < N_TEST; j++)
         {
             #ifdef AutoKNN
-            pred_class = knn_classification(X_test[j], max_samples, y_train, n_samples);
+            pred_class = knn_classification(X_test[j], max_samples, y_train, n_samples, datapoint);
             #endif
-
+            fprintf(fptr, "{\n\"test_id\": %d,\n",j);
+            fprintf(fptr, "\"test_coordinates\": [");
+            fprintf(fptr, "%f", X_test[j][0]);
+            for(int i = 1; i < N_FEATURE; i++){
+                fprintf(fptr, ", %f", X_test[j][i]);
+            }
+            fprintf(fptr, "]");
+            fprintf(fptr, ",");
+            fprintf(fptr, "\nneighbors: \n[\n");
+            for(int i = 0; i < K_NEIGHBOR; i++){
+                fprintf(fptr, "{\"score\":%f,\nCoordinates: [",datapoint[i].score);
+                fprintf(fptr, "%f",datapoint[i].coords[0]);
+                for(int ii = 1; ii < N_FEATURE; ii++){
+                    fprintf(fptr, ", %f",datapoint[i].coords[ii]);
+                }
+                fprintf(fptr, "]}");
+                if(i != K_NEIGHBOR - 1)
+                    fprintf(fptr, ",\n");
+            }
+            fprintf(fptr, "\n]}");
+            if(j != N_TEST - 1)
+                fprintf(fptr, ",\n");
             #ifdef AutoDT
             pred_class = decision_tree_classifier(root, X_test[j]);
             #endif
@@ -154,23 +179,24 @@ int main()
                 acc_perm++;
             }
         }
+        fprintf(fptr, "],\n");
         if (acc_perm > acc)
         {
             acc = acc_perm;
         }
 
-        fptr = fopen(log_file_name, "a");
         #ifdef AutoDT
         fprintf (fptr, "^ Decision Tree:\n\n");
         fprintf (fptr, "\t- Number of samples correctly classified using the Decision Tree: %0.0f\n", acc);
         #endif
 
         #ifdef AutoKNN
-        fprintf(fptr, "^ KNN: \n\n");
-        fprintf (fptr, "\t- Number of samples correctly classified using the KNN classifier: %0.0f\n", acc);
+        //fprintf(fptr, "^ KNN: \n\n");
+        fprintf (fptr, "\"correctly_classified_samples\": %0.0f,\n", acc);
         #endif
         acc = (acc/N_TEST) * 100;
-        fprintf (fptr, "\t- Accuracy: %0.2f%s\n\n", acc, "%");
+        fprintf (fptr, "\"accuracy\": %0.2f\n", acc);
+        fprintf (fptr, "}\n");
         fclose(fptr);
 
         #ifdef ONE_SHOT

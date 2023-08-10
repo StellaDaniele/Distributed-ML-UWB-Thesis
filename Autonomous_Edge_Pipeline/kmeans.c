@@ -112,7 +112,7 @@ int kmeans(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids
             {
                 fptr = fopen(log_file_name, "a");
                 //fprintf(fptr, "^ k-means: \n\n");
-                fprintf(fptr, "\"final_iteration\": %d,\n", iteration);
+                fprintf(fptr, "\"final_iteration\":%d,", iteration);
                 fclose(fptr);
                 break;
             }
@@ -162,7 +162,7 @@ int kmeans(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids
 
     fptr = fopen(log_file_name, "a");
     //fprintf(fptr, "^ k-means: \n\n");
-    fprintf(fptr, "\"final_centroids\": [\n");
+    fprintf(fptr, "\"final_centroids\":[");
     for(int i = 0; i < K; i++)
     {
         fprintf(fptr, "[");
@@ -170,16 +170,16 @@ int kmeans(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids
         {
             fprintf(fptr, "%f", centroids[i][j]);
             if(j!=N_FEATURE-1){
-                fprintf(fptr,", ");
+                fprintf(fptr,",");
         }
         }
         fprintf(fptr, "]");
         if(i!=K-1){
             fprintf(fptr,",");
         }
-        fprintf(fptr,"\n");
+        //fprintf(fptr,"\n");
     }
-    fprintf(fptr, "],\n");
+    fprintf(fptr, "],");
     fclose(fptr);
     return n_samples;
 }

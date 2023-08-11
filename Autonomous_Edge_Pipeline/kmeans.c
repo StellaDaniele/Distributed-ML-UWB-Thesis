@@ -75,6 +75,7 @@ int stop = 0;
 
 int kmeans(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids[K][N_FEATURE], float weights[MEMORY_SIZE][K], int y_train[MEMORY_SIZE+UPDATE_THR], int n_samples)
 {
+    stop = 0;
     int cluster;
     float weight;
     FILE *fptr;

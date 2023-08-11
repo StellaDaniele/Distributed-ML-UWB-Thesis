@@ -13,7 +13,7 @@
 
 #ifndef SIMULATION
 /* one-shot Implementation*/
-#define ONE_SHOT
+#define ONE_SHOT 1
 
 // #define AutoDT
 #define AutoKNN
@@ -35,7 +35,7 @@
 #define FILTER "RANDOM"
 #endif
 
-#define NODE_OFFSET 100
+#define NODE_OFFSET 0
 #define SETTINGS "log"
 #endif
 

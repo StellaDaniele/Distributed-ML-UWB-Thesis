@@ -15,7 +15,7 @@ int y_train[MEMORY_SIZE+UPDATE_THR];
 float centroids[K][N_FEATURE];
 float weights[MEMORY_SIZE+UPDATE_THR][K];
 
-char* log_file_name = "log_"SETTINGS".txt";
+char* log_file_name = "log_"SETTINGS".json";
 
 int main()
 {
@@ -26,7 +26,7 @@ int main()
     int counter = 0;
     int pred_class, pred_class_perm;
 
-    #ifdef ONE_SHOT
+    #if ONE_SHOT
     n_samples = MEMORY_SIZE;
     /* READ ONE_SHOT DATA */
     for(int i = 0; i < n_samples; i++)
@@ -54,6 +54,7 @@ int main()
     FILE *fptr;
     fptr = fopen(log_file_name, "w");
     fprintf (fptr, "{");
+    fprintf (fptr, "\"one_shot_enabled\":%s,",((ONE_SHOT == 1)?"true":"false"));
     fprintf (fptr, "\"training_set_size\":%d,", MEMORY_SIZE);
     fprintf (fptr, "\"testing_set_size\":%d,", N_TEST);
     //fprintf(fptr, "* k-means clustering:\n\n");
@@ -76,16 +77,24 @@ int main()
     fprintf (fptr, "\"initial_threshold\":%d,", INITIAL_THR);
     fprintf (fptr, "\"update_threshold\":%d,", UPDATE_THR);
     fprintf(fptr, "\"filtering_strategy\":\"%s\",", FILTER);
-    fclose(fptr);
+
 
     /*
     counter to know how much samples I need before going to pipeline because we have limited number
     of samples in the dataset (different than a real reading from sensors scenario)
     */
     counter = n_samples;
-
+    fprintf (fptr, "\"pipeline_iterations\":[");
+    fprintf (fptr, "{");
+    fclose(fptr);
+    bool need_for_comma = false;
     while (1)
     {
+        fptr = fopen(log_file_name, "a");
+        if(need_for_comma)
+            fprintf (fptr, ",{");
+        need_for_comma = true;
+        fclose(fptr);
         n_samples = kmeans(max_samples, centroids, weights, y_train, n_samples);
 
         if(n_samples > MEMORY_SIZE)
@@ -136,6 +145,7 @@ int main()
 
         struct DataPoint datapoint[K_NEIGHBOR];
         fptr = fopen(log_file_name, "a");
+
         fprintf (fptr, "\"test_data\":[");
         for(int j = 0; j < N_TEST; j++)
         {
@@ -150,9 +160,9 @@ int main()
             }
             fprintf(fptr, "]");
             fprintf(fptr, ",");
-            fprintf(fptr, "neighbors:[");
+            fprintf(fptr, "\"neighbors\":[");
             for(int i = 0; i < K_NEIGHBOR; i++){
-                fprintf(fptr, "{\"score\":%f,Coordinates:[",datapoint[i].score);
+                fprintf(fptr, "{\"score\":%f,\"coordinates\":[",datapoint[i].score);
                 fprintf(fptr, "%f",datapoint[i].coords[0]);
                 for(int ii = 1; ii < N_FEATURE; ii++){
                     fprintf(fptr, ",%f",datapoint[i].coords[ii]);
@@ -199,7 +209,7 @@ int main()
         fprintf (fptr, "}");
         fclose(fptr);
 
-        #ifdef ONE_SHOT
+        #if ONE_SHOT
         break;
         #endif
 
@@ -225,8 +235,10 @@ int main()
         {
             increment += UPDATE_THR;
         }
-
     }
+    fptr = fopen(log_file_name, "a");
+    fprintf (fptr, "]}");
+    fclose(fptr);
 }
 
 

@@ -37,6 +37,7 @@
 
 #define NODE_OFFSET 0
 #define SETTINGS "log"
+#define N_TEST_USED N_TEST
 #endif
 
 extern char* log_file_name;

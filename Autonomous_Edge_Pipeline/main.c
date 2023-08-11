@@ -56,7 +56,7 @@ int main()
     fprintf (fptr, "{");
     fprintf (fptr, "\"one_shot_enabled\":%s,",((ONE_SHOT == 1)?"true":"false"));
     fprintf (fptr, "\"training_set_size\":%d,", MEMORY_SIZE);
-    fprintf (fptr, "\"testing_set_size\":%d,", N_TEST);
+    fprintf (fptr, "\"testing_set_size\":%d,", N_TEST_USED);
     //fprintf(fptr, "* k-means clustering:\n\n");
     fprintf(fptr, "\"num_clusters\":%d,", K);
     fprintf(fptr, "\"max_iterations\":%d,", ITERATION);
@@ -147,7 +147,7 @@ int main()
         fptr = fopen(log_file_name, "a");
 
         fprintf (fptr, "\"test_data\":[");
-        for(int j = 0; j < N_TEST; j++)
+        for(int j = 0; j < N_TEST_USED; j++)
         {
             #ifdef AutoKNN
             pred_class = knn_classification(X_test[j], max_samples, y_train, n_samples, datapoint);
@@ -172,7 +172,7 @@ int main()
                     fprintf(fptr, ",");
             }
             fprintf(fptr, "]}");
-            if(j != N_TEST - 1)
+            if(j != N_TEST_USED - 1)
                 fprintf(fptr, ",");
             #ifdef AutoDT
             pred_class = decision_tree_classifier(root, X_test[j]);
@@ -204,7 +204,7 @@ int main()
         //fprintf(fptr, "^ KNN: \n\n");
         fprintf (fptr, "\"correctly_classified_samples\":%0.0f,", acc);
         #endif
-        acc = (acc/N_TEST) * 100;
+        acc = (acc/N_TEST_USED) * 100;
         fprintf (fptr, "\"accuracy\":%0.2f", acc);
         fprintf (fptr, "}");
         fclose(fptr);

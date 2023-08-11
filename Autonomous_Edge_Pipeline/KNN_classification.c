@@ -57,8 +57,10 @@ int knn_classification(float X[], float training_samples[MEMORY_SIZE+UPDATE_THR]
         for (int n = 0; n < K_NEIGHBOR; n++)
         {
             int neighbor_id = neighbours[n].id;
-            nearest_neighbors[n].score = neighbours[n].score;
-            memcpy(nearest_neighbors[n].coords, training_samples[neighbor_id], N_FEATURE * sizeof(float));
+            if(nearest_neighbors != NULL){
+                nearest_neighbors[n].score = neighbours[n].score;
+                memcpy(nearest_neighbors[n].coords, training_samples[neighbor_id], N_FEATURE * sizeof(float));
+            }
         }
 
         int n;
@@ -68,23 +70,23 @@ int knn_classification(float X[], float training_samples[MEMORY_SIZE+UPDATE_THR]
         for(n = 0; n < K_NEIGHBOR; n++)
         {
             scores[y_train[neighbours[n].id]] += neighbours[n].score;
-            printf("%f\t",neighbours[n].score);
+            //printf("%f\t",neighbours[n].score);
         }
-        puts("");
+        //puts("");
 
         float bestScore=0;
         int bestClass;
 
         for(n = 0; n < K; n++)
         {
-            printf("%f\t",scores[n]);
+            //printf("%f\t",scores[n]);
             if (scores[n] > bestScore)
             {
                 bestScore = scores[n];
                 bestClass = n;
             }
         }
-        puts("\n");
+        //puts("\n");
         return(bestClass);
     }
 }

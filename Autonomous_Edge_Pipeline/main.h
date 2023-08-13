@@ -11,16 +11,21 @@
 // How likely each data point belong to each cluster.
 #define CONFIDENCE
 
+// #define AutoDT
+#define AutoKNN
+
 #ifndef SIMULATION
 /* one-shot Implementation*/
 #define ONE_SHOT 1
 
-// #define AutoDT
-#define AutoKNN
-
 /* FILTERING STRATEGY */
-
 #define CONF
+
+#define NODE_OFFSET 0
+#define SETTINGS "log"
+#define N_TEST_USED N_TEST
+#endif
+
 #ifdef CONF
 #define FILTER "CONF"
 #endif
@@ -33,11 +38,6 @@
 // #define RANDOM
 #ifdef RANDOM
 #define FILTER "RANDOM"
-#endif
-
-#define NODE_OFFSET 0
-#define SETTINGS "log"
-#define N_TEST_USED N_TEST
 #endif
 
 extern char* log_file_name;

@@ -53,13 +53,23 @@ int main()
     /* Save info into log file */
     FILE *fptr;
     fptr = fopen(log_file_name, "w");
-    fprintf (fptr, "{");
-    fprintf (fptr, "\"one_shot_enabled\":%s,",((ONE_SHOT == 1)?"true":"false"));
-    fprintf (fptr, "\"training_set_size\":%d,", MEMORY_SIZE);
-    fprintf (fptr, "\"testing_set_size\":%d,", N_TEST_USED);
-    //fprintf(fptr, "* k-means clustering:\n\n");
+    fprintf(fptr, "{");
+    fprintf(fptr, "\"node_id\":%d,", NODE_ID);
+    fprintf(fptr, "\"n_nodes\":%d,", N_NODES);
+    fprintf(fptr, "\"node_offset\":%d,", NODE_OFFSET);
+    fprintf(fptr, "\"memory_size\":%d,", MEMORY_SIZE);
+    fprintf(fptr, "\"initial_threshold\":%d,", INITIAL_THR);
+    fprintf(fptr, "\"update_threshold\":%d,", UPDATE_THR);
+    fprintf(fptr, "\"filtering_strategy\":\"%s\",", FILTER);
+    fprintf(fptr, "\"one_shot_enabled\":%s,",((ONE_SHOT == 1)?"true":"false"));
+    fprintf(fptr, "\"training_set_size\":%d,", N_TRAIN);
+    fprintf(fptr, "\"train_used\":%d,", N_TRAIN_USED);
+    fprintf(fptr, "\"testing_set_size\":%d,", N_TEST);
+    fprintf(fptr, "\"test_used\":%d,", N_TEST_USED);
     fprintf(fptr, "\"num_clusters\":%d,", K);
     fprintf(fptr, "\"max_iterations\":%d,", ITERATION);
+    fprintf(fptr, "\"confidence_enabled\":%s,",((CONFIDENCE == 1)?"true":"false"));
+    fprintf(fptr, "\"confidence_thr\":%f,", CONFIDENCE_THR);
 
     #ifdef AutoDT
     fprintf(fptr, "* Decision Tree classifier: \n\n");
@@ -72,11 +82,7 @@ int main()
     fprintf(fptr, "\"num_neighbors\":%d,", K_NEIGHBOR);
     #endif
 
-    //fprintf (fptr, "* Pipeline:\n\n");
-    fprintf (fptr, "\"memory_size\":%d,", MEMORY_SIZE);
-    fprintf (fptr, "\"initial_threshold\":%d,", INITIAL_THR);
-    fprintf (fptr, "\"update_threshold\":%d,", UPDATE_THR);
-    fprintf(fptr, "\"filtering_strategy\":\"%s\",", FILTER);
+
 
 
     /*
@@ -84,15 +90,15 @@ int main()
     of samples in the dataset (different than a real reading from sensors scenario)
     */
     counter = n_samples;
-    fprintf (fptr, "\"pipeline_iterations\":[");
-    fprintf (fptr, "{");
+    fprintf(fptr, "\"pipeline_iterations\":[");
+    fprintf(fptr, "{");
     fclose(fptr);
     bool need_for_comma = false;
     while (1)
     {
         fptr = fopen(log_file_name, "a");
         if(need_for_comma)
-            fprintf (fptr, ",{");
+            fprintf(fptr, ",{");
         need_for_comma = true;
         fclose(fptr);
         n_samples = kmeans(max_samples, centroids, weights, y_train, n_samples);
@@ -202,11 +208,11 @@ int main()
 
         #ifdef AutoKNN
         //fprintf(fptr, "^ KNN: \n\n");
-        fprintf (fptr, "\"correctly_classified_samples\":%0.0f,", acc);
+        fprintf(fptr, "\"correctly_classified_samples\":%0.0f,", acc);
         #endif
         acc = (acc/N_TEST_USED) * 100;
-        fprintf (fptr, "\"accuracy\":%0.2f", acc);
-        fprintf (fptr, "}");
+        fprintf(fptr, "\"accuracy\":%0.2f", acc);
+        fprintf(fptr, "}");
         fclose(fptr);
 
         #if ONE_SHOT
@@ -217,7 +223,7 @@ int main()
         acc = 0;
         acc_perm = 0;
 
-        if(counter > N_TRAIN)
+        if(counter > N_TRAIN_USED)
         {
             break;
         }
@@ -237,7 +243,7 @@ int main()
         }
     }
     fptr = fopen(log_file_name, "a");
-    fprintf (fptr, "]}");
+    fprintf(fptr, "]}");
     fclose(fptr);
 }
 

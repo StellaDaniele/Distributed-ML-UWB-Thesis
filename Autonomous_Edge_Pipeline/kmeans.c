@@ -123,7 +123,7 @@ int kmeans(float max_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], float centroids
         memset(cluster_assignment, 0, sizeof(cluster_assignment));
     }
 
-    #ifdef CONFIDENCE
+    #if CONFIDENCE
     /* weight calculation */
     for(int i = 0; i < n_samples; i++)
     {

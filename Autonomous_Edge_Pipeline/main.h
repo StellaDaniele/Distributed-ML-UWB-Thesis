@@ -8,20 +8,20 @@
 #include "dataset.h"
 #include "test.h"
 
-// How likely each data point belong to each cluster.
-#define CONFIDENCE
-
 // #define AutoDT
 #define AutoKNN
 
 #ifndef SIMULATION
 /* one-shot Implementation*/
-#define ONE_SHOT 1
-
+#define ONE_SHOT 0
+// How likely each data point belong to each cluster.
+#define CONFIDENCE 1
 /* FILTERING STRATEGY */
 #define CONF
-
+#define NODE_ID 0
+#define N_NODES 1
 #define NODE_OFFSET 0
+#define N_TRAIN_USED N_TRAIN
 #define SETTINGS "log"
 #define N_TEST_USED N_TEST
 #endif

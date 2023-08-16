@@ -22,13 +22,13 @@ def generate_compilation_strings():
     output_file = open(file_compilation_strings, "w")
 
     for N_NODES in range(1,6):
-        N_TRAIN_USED = N_TRAIN / N_NODES
-        for NODE_ID in N_NODES:
+        N_TRAIN_USED = N_TRAIN // N_NODES
+        for NODE_ID in range(1,N_NODES+1):
             for K_NEIGHBOR in range(1,11):
-                for MEMORY_SIZE in range(10,N_TRAIN_USED,MEMORY_SIZE*2):
-                    # TODO: Decide how to increase: is 10*2^i ok?
-                    min_initial_thr = min(MEMORY_SIZE/2,50)
-                    max_initial_thr = MEMORY_SIZE / 2
+                MEMORY_SIZE = 10 # Initial value to decide
+                while MEMORY_SIZE <= N_TRAIN_USED:
+                    min_initial_thr = min(MEMORY_SIZE//2,50)
+                    max_initial_thr = MEMORY_SIZE // 2
                     NODE_OFFSET = MEMORY_SIZE/N_NODES*(NODE_ID-1)
                     for CONFIDENCE in range(2): # False / True
                         for CONFIDENCE_THR in (CONF_THR_LIST if CONFIDENCE else [0]):
@@ -37,40 +37,42 @@ def generate_compilation_strings():
                                 for ONE_SHOT in range(2): # False / True
                                     for INITIAL_THR in (range(min_initial_thr,max_initial_thr,50) if not ONE_SHOT else [0]):
                                         # TODO: Decide how to increase: is min+50*i ok?
-                                        for UPDATE_THR in (range(5,100,UPDATE_THR*2) if not ONE_SHOT else [0]):
+                                        update_thr_values = [0]
+                                        if not ONE_SHOT:
+                                            min_update_thr_value = 5
+                                            max_update_thr_value = 100
+                                            current_value = min_initial_thr
+                                            while current_value <= max_update_thr_value and INITIAL_THR+current_value <=MEMORY_SIZE:
+                                                update_thr_values.append(current_value)
+                                                current_value *= 2
+                                        for UPDATE_THR in update_thr_values:
                                             # TODO: Decide how to increase: is 5*2^i ok?
                                             # TODO: Decide order, add everything to string, remember SIMULATION macro
-                                            pass
-
-
-
-    # for initial in INITIAL_THR:
-    #     for update in UPDATE_THR:
-    #         for size in MEMORY_SIZE:
-    #             for iteration in ITERATION:
-    #                 for confidence in CONFIDENCE_THR:
-    #                     for k in K_NEIGHBOR:
-    #                         for fil in FILTER:
-    #                             for node in NODES:
-    #                                 offset = node * size
-    #                                 name_curr = f"{initial}_{update}_{size}_{iteration}_{confidence}_{k}_{fil}_{node}_{offset}"
-    #                                 compilation_string = f"gcc "\
-    #                                 f"-D INITIAL_THR={initial} "\
-    #                                 f"-D UPDATE_THR={update} "\
-    #                                 f"-D MEMORY_SIZE={size} "\
-    #                                 f"-D ITERATION={iteration} "\
-    #                                 f"-D CONFIDENCE_THR={confidence} "\
-    #                                 f"-D K_NEIGHBOR={k} "\
-    #                                 f"-D {fil} "\
-    #                                 f"-D NODES={node} "\
-    #                                 f"-D NODE_OFFSET={offset} "\
-    #                                 f"-D SETTINGS=\"{name_curr}\" "\
-    #                                 f"{gcc_warning_suppression_options} "\
-    #                                 f"{source_code_files} "\
-    #                                 f"-o {directory_executables}/{name_curr}"
-    #                                 output_file.write(compilation_string + "\n")
-    #                                 output_file_names.append(name_curr)
-
+                                            name_curr = f"{N_NODES}_{NODE_ID}_{K_NEIGHBOR}_{MEMORY_SIZE}_{CONFIDENCE}_{CONFIDENCE_THR}_{FILTER}_{ONE_SHOT}_{INITIAL_THR}_{UPDATE_THR}_{K}_{ITERATION}_{N_TRAIN}_{N_TRAIN_USED}_{N_TEST}_{N_TEST_USED}"
+                                            compilation_string = f"gcc -D SIMULATION "\
+                                            f"-D N_NODES={N_NODES} "\
+                                            f"-D NODE_ID={NODE_ID} "\
+                                            f"-D K_NEIGHBOR={K_NEIGHBOR} "\
+                                            f"-D MEMORY_SIZE={MEMORY_SIZE} "\
+                                            f"-D CONFIDENCE={CONFIDENCE} "\
+                                            f"-D CONFIDENCE_THR={CONFIDENCE_THR} "\
+                                            f"-D FILTER={FILTER} "\
+                                            f"-D ONE_SHOT={ONE_SHOT} "\
+                                            f"-D INITIAL_THR={INITIAL_THR} "\
+                                            f"-D UPDATE_THR={UPDATE_THR} "\
+                                            f"-D K={K} "\
+                                            f"-D ITERATION={ITERATION} "\
+                                            f"-D N_TRAIN={N_TRAIN} "\
+                                            f"-D N_TRAIN_USED={N_TRAIN_USED} "\
+                                            f"-D N_TEST={N_TEST} "\
+                                            f"-D N_TEST_USED={N_TEST_USED} "\
+                                            f"-D SETTINGS=\"{name_curr}\" "\
+                                            f"{gcc_warning_suppression_options} "\
+                                            f"{source_code_files} "\
+                                            f"-o {directory_executables}/{name_curr}"
+                                            output_file.write(compilation_string + "\n")
+                                            output_file_names.append(name_curr)
+                    MEMORY_SIZE *= 2 # TODO: Decide how to increase: is 10*2^i ok?
     return output_file_names
 
 if __name__ == "__main__":
@@ -82,12 +84,12 @@ if __name__ == "__main__":
     for file_name in output_file_names:
         print(file_name)
 
-    # Gcc compilation execution
-    os.system(file_compilation_strings)
+    # # Gcc compilation execution
+    # os.system(file_compilation_strings)
 
-    # Execution of all compiled programs
-    for executable_name in output_file_names:
-        os.system(directory_executables + "/" + executable_name + ".exe")
+    # # Execution of all compiled programs
+    # for executable_name in output_file_names:
+    #     os.system(directory_executables + "/" + executable_name + ".exe")
 
     # Reading and concatenating all the logs
     # for log_name in output_file_names:

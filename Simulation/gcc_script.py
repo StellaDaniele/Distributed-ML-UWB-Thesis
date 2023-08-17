@@ -1,14 +1,16 @@
 import os
+import concurrent.futures
+import subprocess
 
 # Paths and script settings
-directory_executables = "./Compiled"
-directory_compilation_strings = "./Compilation_Strings"
-source_code_files = "../../Autonomous_Edge_Pipeline/*.c"
+directory_executables = ".\\Compiled"
+directory_compilation_strings = ".\\Compilation_Strings"
+source_code_files = "../Autonomous_Edge_Pipeline/*.c"
 gcc_warning_suppression_options = "" # "2>nul"
 file_name_compilation = "compilation_strings"
-file_name_compilation_prefix = directory_compilation_strings + "/" + file_name_compilation
+file_name_compilation_prefix = directory_compilation_strings + "\\" + file_name_compilation
 extension_file_compilation = ".bat"
-batch_dimension_compilation_files = 1000
+batch_dimension_compilation_files = 10000
 
 # Static values
 K = 2   # Number of clusters k-means
@@ -90,6 +92,10 @@ def generate_compilation_strings():
                     MEMORY_SIZE *= 2 # TODO: Decide how to increase: is 10*2^i ok?
     return output_file_names, compilation_files_counter, total_compilation_strings_generated
 
+def run_batch(batch_name):
+    process = subprocess.Popen(batch_name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process.communicate()  # Discard stdout and stderr
+
 if __name__ == "__main__":
     if not os.path.exists(directory_executables):
         os.makedirs(directory_executables)
@@ -100,8 +106,21 @@ if __name__ == "__main__":
     #     print(file_name)
     print("# Files: "+str(compilation_files_counter))
     print("# Compilation strings: "+str(total_compilation_strings_generated))
-    # # Gcc compilation execution
-    # os.system(file_compilation_strings)
+
+    # Gcc compilation execution
+    with concurrent.futures.ThreadPoolExecutor(max_workers=compilation_files_counter) as executor:
+        futures = [
+            executor.submit(run_batch, file_name_compilation_prefix + str(i) + extension_file_compilation)
+            for i in range(compilation_files_counter)
+        ]
+
+    # Wait for all the tasks to complete
+    concurrent.futures.wait(futures)
+
+    for future in futures:
+        result = future.result()
+        print(result,end=' ')
+    print("")
 
     # # Execution of all compiled programs
     # for executable_name in output_file_names:

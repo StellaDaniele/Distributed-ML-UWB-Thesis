@@ -54,22 +54,24 @@ int main()
     FILE *fptr;
     fptr = fopen(log_file_name, "w");
     fprintf(fptr, "{");
-    fprintf(fptr, "\"node_id\":%d,", NODE_ID);
-    fprintf(fptr, "\"n_nodes\":%d,", N_NODES);
-    fprintf(fptr, "\"node_offset\":%d,", NODE_OFFSET);
-    fprintf(fptr, "\"memory_size\":%d,", MEMORY_SIZE);
-    fprintf(fptr, "\"initial_threshold\":%d,", INITIAL_THR);
-    fprintf(fptr, "\"update_threshold\":%d,", UPDATE_THR);
-    fprintf(fptr, "\"filtering_strategy\":\"%s\",", FILTER);
-    fprintf(fptr, "\"one_shot_enabled\":%s,",((ONE_SHOT == 1)?"true":"false"));
-    fprintf(fptr, "\"training_set_size\":%d,", N_TRAIN);
-    fprintf(fptr, "\"train_used\":%d,", N_TRAIN_USED);
-    fprintf(fptr, "\"testing_set_size\":%d,", N_TEST);
-    fprintf(fptr, "\"test_used\":%d,", N_TEST_USED);
-    fprintf(fptr, "\"num_clusters\":%d,", K);
-    fprintf(fptr, "\"max_iterations\":%d,", ITERATION);
-    fprintf(fptr, "\"confidence_enabled\":%s,",((CONFIDENCE == 1)?"true":"false"));
-    fprintf(fptr, "\"confidence_thr\":%f,", CONFIDENCE_THR);
+    fprintf(fptr, "\"N_NODES\":%d,", N_NODES);
+    fprintf(fptr, "\"NODE_ID\":%d,", NODE_ID);
+    fprintf(fptr, "\"K_NEIGHBOR\":%d,", K_NEIGHBOR);
+    fprintf(fptr, "\"MEMORY_SIZE\":%d,", MEMORY_SIZE);
+    fprintf(fptr, "\"NODE_OFFSET\":%d,", NODE_OFFSET);
+    fprintf(fptr, "\"CONFIDENCE\":%s,",((CONFIDENCE == 1)?"true":"false"));
+    fprintf(fptr, "\"CONFIDENCE_THR\":%f,", CONFIDENCE_THR);
+    fprintf(fptr, "\"FILTER\":\"%s\",", FILTER);
+    fprintf(fptr, "\"ONE_SHOT\":%s,",((ONE_SHOT == 1)?"true":"false"));
+    fprintf(fptr, "\"INITIAL_THR\":%d,", INITIAL_THR);
+    fprintf(fptr, "\"UPDATE_THR\":%d,", UPDATE_THR);
+    fprintf(fptr, "\"K\":%d,", K);
+    fprintf(fptr, "\"ITERATION\":%d,", ITERATION);
+    fprintf(fptr, "\"N_TRAIN\":%d,", N_TRAIN);
+    fprintf(fptr, "\"N_TRAIN_USED\":%d,", N_TRAIN_USED);
+    fprintf(fptr, "\"N_TEST\":%d,", N_TEST);
+    fprintf(fptr, "\"N_TEST_USED\":%d,", N_TEST_USED);
+
 
     #ifdef AutoDT
     fprintf(fptr, "* Decision Tree classifier: \n\n");
@@ -79,7 +81,7 @@ int main()
 
     #ifdef AutoKNN
     //fprintf(fptr, "* KNN classifier:\n\n");
-    fprintf(fptr, "\"num_neighbors\":%d,", K_NEIGHBOR);
+
     #endif
 
 

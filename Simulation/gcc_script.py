@@ -5,6 +5,7 @@ import subprocess
 # Paths and script settings
 directory_executables = ".\\Compiled"
 directory_compilation_strings = ".\\Compilation_Strings"
+directory_logs = "./Logs"
 source_code_files = "../Autonomous_Edge_Pipeline/*.c"
 gcc_warning_suppression_options = "" # "2>nul"
 file_name_compilation = "compilation_strings"
@@ -77,9 +78,10 @@ def generate_compilation_strings():
                                             f"-D N_TEST={N_TEST} "\
                                             f"-D N_TEST_USED={N_TEST_USED} "\
                                             f"-D SETTINGS=\\\"{name_curr}\\\" "\
+                                            f"-D OUTPUT_DIR=\\\"{directory_logs}/\\\" "\
                                             f"{gcc_warning_suppression_options} "\
                                             f"{source_code_files} "\
-                                            f"-o {directory_executables}/{name_curr}"
+                                            f"-o {directory_executables}/{name_curr}.exe"
                                             output_file.write(compilation_string + "\n")
                                             current_strings_on_file += 1
                                             total_compilation_strings_generated += 1
@@ -89,6 +91,8 @@ def generate_compilation_strings():
                                                 compilation_files_counter += 1
                                                 current_strings_on_file = 0
                                             output_file_names.append(name_curr)
+                                            # if(current_strings_on_file==10):
+                                            #     return output_file_names, compilation_files_counter, total_compilation_strings_generated
                     MEMORY_SIZE *= 2 # TODO: Decide how to increase: is 10*2^i ok?
     return output_file_names, compilation_files_counter, total_compilation_strings_generated
 
@@ -96,36 +100,48 @@ def run_batch(batch_name):
     process = subprocess.Popen(batch_name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     process.communicate()  # Discard stdout and stderr
 
-if __name__ == "__main__":
-    if not os.path.exists(directory_executables):
-        os.makedirs(directory_executables)
+def execute_executables(executables):
+    for executable in executables:
+        os.system(directory_executables + "\\" + executable + ".exe")
 
+if __name__ == "__main__":
     # Gcc compilation string generation
+    input("Press the enter key to generate the compilation strings.")
+    if not os.path.exists(directory_compilation_strings):
+        os.makedirs(directory_compilation_strings)
     output_file_names, compilation_files_counter, total_compilation_strings_generated = generate_compilation_strings()
-    # for file_name in output_file_names:
-    #     print(file_name)
+    for file_name in output_file_names:
+        print(file_name)
     print("# Files: "+str(compilation_files_counter))
     print("# Compilation strings: "+str(total_compilation_strings_generated))
 
     # Gcc compilation execution
+    input("Press the enter key to compile.")
+    if not os.path.exists(directory_executables):
+        os.makedirs(directory_executables)
     with concurrent.futures.ThreadPoolExecutor(max_workers=compilation_files_counter) as executor:
         futures = [
             executor.submit(run_batch, file_name_compilation_prefix + str(i) + extension_file_compilation)
             for i in range(compilation_files_counter)
         ]
-
-    # Wait for all the tasks to complete
-    concurrent.futures.wait(futures)
+        concurrent.futures.wait(futures)
 
     for future in futures:
         result = future.result()
         print(result,end=' ')
     print("")
 
-    # # Execution of all compiled programs
+    # Execution of all compiled programs
+    input("Press the enter key to run all the executables.")
     # for executable_name in output_file_names:
     #     os.system(directory_executables + "/" + executable_name + ".exe")
+    if not os.path.exists(directory_logs):
+        os.makedirs(directory_logs)
+    num_threads = 4  # Adjust as needed
+    batch_size = len(output_file_names) // num_threads
+    batches = [output_file_names[i:i+batch_size] for i in range(0, len(output_file_names), batch_size)]
 
-    # Reading and concatenating all the logs
-    # for log_name in output_file_names:
-    #     log_file = open(directory_executables + "/" + "log_" + log_name + ".txt", "r")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
+        futures = [executor.submit(execute_executables, batch) for batch in batches]
+        concurrent.futures.wait(futures)
+

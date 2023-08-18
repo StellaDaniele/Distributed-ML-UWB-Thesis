@@ -23,6 +23,7 @@
 #define NODE_OFFSET 0
 #define N_TRAIN_USED N_TRAIN
 #define SETTINGS "log"
+#define OUTPUT_DIR
 #define N_TEST_USED N_TEST
 #endif
 

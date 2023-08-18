@@ -15,7 +15,7 @@ int y_train[MEMORY_SIZE+UPDATE_THR];
 float centroids[K][N_FEATURE];
 float weights[MEMORY_SIZE+UPDATE_THR][K];
 
-char* log_file_name = "log_"SETTINGS".json";
+char* log_file_name = OUTPUT_DIR"log_"SETTINGS".json";
 
 int main()
 {

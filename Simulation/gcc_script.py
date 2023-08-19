@@ -39,7 +39,7 @@ def generate_compilation_strings():
                 while MEMORY_SIZE <= N_TRAIN_USED:
                     min_initial_thr = min(MEMORY_SIZE//2,50)
                     max_initial_thr = MEMORY_SIZE // 2
-                    NODE_OFFSET = MEMORY_SIZE//N_NODES*(NODE_ID-1)
+                    NODE_OFFSET = N_TRAIN_USED * (NODE_ID-1) #MEMORY_SIZE//N_NODES*(NODE_ID-1)
                     for CONFIDENCE in range(2): # False / True
                         for CONFIDENCE_THR in (CONF_THR_LIST if CONFIDENCE else [0]):
                             # The condition above should limit all the useless cases
@@ -85,7 +85,7 @@ def generate_compilation_strings():
                                             output_file.write(compilation_string + "\n")
                                             current_strings_on_file += 1
                                             total_compilation_strings_generated += 1
-                                            if(current_strings_on_file % batch_dimension_compilation_files == 0):
+                                            if current_strings_on_file % batch_dimension_compilation_files == 0:
                                                 output_file.close()
                                                 output_file = open(file_name_compilation_prefix+str(compilation_files_counter)+extension_file_compilation, "w")
                                                 compilation_files_counter += 1

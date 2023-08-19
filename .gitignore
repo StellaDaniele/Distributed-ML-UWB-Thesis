@@ -1,4 +1,10 @@
 *.exe
 *.out
 .vscode
-Simulation/Compiled/*.*
+Simulation/Compiled/*.exe
+Simulation/Compiled/*.out
+Simulation/Compilation_Strings/*.txt
+Simulation/Compilation_Strings/*.bat
+Simulation/Compilation_Strings/*.sh
+Simulation/Logs/*.json
+Simulation/Logs/*.txt

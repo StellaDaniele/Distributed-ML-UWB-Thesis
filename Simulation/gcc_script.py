@@ -11,7 +11,7 @@ gcc_warning_suppression_options = "" # "2>nul"
 file_name_compilation = "compilation_strings"
 file_name_compilation_prefix = directory_compilation_strings + "\\" + file_name_compilation
 extension_file_compilation = ".bat"
-batch_dimension_compilation_files = 10000
+batch_dimension_compilation_files = 2750 # 16 compilation files (43560 compilation strings)
 
 # Static values
 K = 2   # Number of clusters k-means
@@ -47,7 +47,7 @@ def generate_compilation_strings():
                                 for ONE_SHOT in range(2): # False / True
                                     for INITIAL_THR in (range(min_initial_thr,max_initial_thr,50) if not ONE_SHOT else [0]):
                                         # TODO: Decide how to increase: is min+50*i ok?
-                                        update_thr_values = [0]
+                                        update_thr_values = []
                                         if not ONE_SHOT:
                                             min_update_thr_value = 5
                                             max_update_thr_value = 100
@@ -110,8 +110,8 @@ if __name__ == "__main__":
     if not os.path.exists(directory_compilation_strings):
         os.makedirs(directory_compilation_strings)
     output_file_names, compilation_files_counter, total_compilation_strings_generated = generate_compilation_strings()
-    for file_name in output_file_names:
-        print(file_name)
+    # for file_name in output_file_names:
+    #     print(file_name)
     print("# Files: "+str(compilation_files_counter))
     print("# Compilation strings: "+str(total_compilation_strings_generated))
 
@@ -137,7 +137,7 @@ if __name__ == "__main__":
     #     os.system(directory_executables + "/" + executable_name + ".exe")
     if not os.path.exists(directory_logs):
         os.makedirs(directory_logs)
-    num_threads = 4  # Adjust as needed
+    num_threads = 16
     batch_size = len(output_file_names) // num_threads
     batches = [output_file_names[i:i+batch_size] for i in range(0, len(output_file_names), batch_size)]
 

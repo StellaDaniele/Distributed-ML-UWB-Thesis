@@ -51,7 +51,7 @@ def generate_compilation_strings():
                                         if not ONE_SHOT:
                                             min_update_thr_value = 5
                                             max_update_thr_value = 100
-                                            current_value = min_initial_thr
+                                            current_value = min_update_thr_value
                                             while current_value <= max_update_thr_value and INITIAL_THR+current_value <=MEMORY_SIZE:
                                                 update_thr_values.append(current_value)
                                                 current_value *= 2

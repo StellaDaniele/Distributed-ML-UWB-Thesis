@@ -11,7 +11,7 @@ gcc_warning_suppression_options = "" # "2>nul"
 file_name_compilation = "compilation_strings"
 file_name_compilation_prefix = directory_compilation_strings + "\\" + file_name_compilation
 extension_file_compilation = ".bat"
-batch_dimension_compilation_files = 2750 # 16 compilation files (43560 compilation strings)
+batch_dimension_compilation_files = 5896 # 16 compilation files (94320 compilation strings)
 
 # Static values
 K = 2   # Number of clusters k-means
@@ -35,30 +35,43 @@ def generate_compilation_strings():
         N_TRAIN_USED = N_TRAIN // N_NODES
         for NODE_ID in range(1,N_NODES+1):
             for K_NEIGHBOR in range(1,11):
-                MEMORY_SIZE = 10 # Initial value to decide
+                MEMORY_SIZE = 10 # NOTE: Decide initial value: is 10 ok?
                 while MEMORY_SIZE <= N_TRAIN_USED:
                     min_initial_thr = min(MEMORY_SIZE//2,50)
                     max_initial_thr = MEMORY_SIZE // 2
                     NODE_OFFSET = N_TRAIN_USED * (NODE_ID-1) #MEMORY_SIZE//N_NODES*(NODE_ID-1)
                     for CONFIDENCE in range(2): # False / True
                         for CONFIDENCE_THR in (CONF_THR_LIST if CONFIDENCE else [0]):
-                            # The condition above should limit all the useless cases
+                            # The condition above avoids all the useless cases: when CONFIDENCE=0, CONFIDENCE_THR
+                            # is not used by the program
                             for FILTER in FILTERS:
                                 for ONE_SHOT in range(2): # False / True
-                                    for INITIAL_THR in (range(min_initial_thr,max_initial_thr,50) if not ONE_SHOT else [0]):
-                                        # TODO: Decide how to increase: is min+50*i ok?
-                                        update_thr_values = []
-                                        if not ONE_SHOT:
+                                    # When ONE_SHOT=0, INITIAL_THR and UPDATE_THR are not used. Therefore, they can be
+                                    # set to 0
+                                    if ONE_SHOT:
+                                        initial_thr_values = [0]
+                                    else:
+                                        if min_initial_thr == max_initial_thr:
+                                            initial_thr_values = [min_initial_thr]
+                                        else:
+                                            initial_thr_values = range(min_initial_thr,max_initial_thr,50)
+                                    for INITIAL_THR in initial_thr_values:
+                                        # NOTE: Decide how to increase: is min+50*i ok?
+                                        if ONE_SHOT:
+                                            update_thr_values = [0]
+                                        else:
                                             min_update_thr_value = 5
                                             max_update_thr_value = 100
+                                            update_thr_values = []
                                             current_value = min_update_thr_value
                                             while current_value <= max_update_thr_value and INITIAL_THR+current_value <=MEMORY_SIZE:
                                                 update_thr_values.append(current_value)
                                                 current_value *= 2
                                         for UPDATE_THR in update_thr_values:
-                                            # TODO: Decide how to increase: is 5*2^i ok?
-                                            name_curr = f"{N_NODES}_{K_NEIGHBOR}_{MEMORY_SIZE}_{NODE_OFFSET}_{CONFIDENCE}_{CONFIDENCE_THR}_{FILTER}_{ONE_SHOT}_{INITIAL_THR}_{UPDATE_THR}_{K}_{ITERATION}_{N_TRAIN}_{N_TRAIN_USED}_{N_TEST}_{N_TEST_USED}_{NODE_ID}"
-                                            # NODE_ID is last so that we can use sorting to find all the nodes given the settings
+                                            # NOTE: Decide how to increase: is 5*2^i ok?
+                                            name_curr = f"{N_NODES}_{K_NEIGHBOR}_{MEMORY_SIZE}_{CONFIDENCE}_{CONFIDENCE_THR}_{FILTER}_{ONE_SHOT}_{INITIAL_THR}_{UPDATE_THR}_{K}_{ITERATION}_{N_TRAIN}_{N_TRAIN_USED}_{N_TEST}_{N_TEST_USED}_{NODE_ID}"
+                                            # NODE_ID is last so that we can use sorting to find all the nodes given
+                                            # the settings
                                             compilation_string = f"gcc -D SIMULATION "\
                                             f"-D N_NODES={N_NODES} "\
                                             f"-D NODE_ID={NODE_ID} "\
@@ -93,7 +106,7 @@ def generate_compilation_strings():
                                             output_file_names.append(name_curr)
                                             # if(current_strings_on_file==10):
                                             #     return output_file_names, compilation_files_counter, total_compilation_strings_generated
-                    MEMORY_SIZE *= 2 # TODO: Decide how to increase: is 10*2^i ok?
+                    MEMORY_SIZE *= 2 # NOTE: Decide how to increase: is 10*2^i ok?
     return output_file_names, compilation_files_counter, total_compilation_strings_generated
 
 def run_batch(batch_name):
@@ -126,6 +139,7 @@ if __name__ == "__main__":
         ]
         concurrent.futures.wait(futures)
 
+    print("Values returned by the threads:")
     for future in futures:
         result = future.result()
         print(result,end=' ')
@@ -144,4 +158,3 @@ if __name__ == "__main__":
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
         futures = [executor.submit(execute_executables, batch) for batch in batches]
         concurrent.futures.wait(futures)
-

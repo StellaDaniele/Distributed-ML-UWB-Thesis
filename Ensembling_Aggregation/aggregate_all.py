@@ -42,7 +42,7 @@ def extract_data(folder_name):
         for node in range(n_nodes):
             for neighbor in range(n_neighbors):
                 neighbors[node][neighbor] = nodes_data[0]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["coordinates"]
-                scores[node][neighbor] = nodes_data[0]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["score"]
+                scores[node][neighbor] = 1-nodes_data[0]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["score"]
         correctly_classified += int(aggregator(n_nodes, centroids, n_neighbors, neighbors, test, test_coordinates, scores))
 
     accuracy = correctly_classified/n_tests

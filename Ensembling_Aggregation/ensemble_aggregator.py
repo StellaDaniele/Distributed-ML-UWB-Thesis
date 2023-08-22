@@ -1,4 +1,52 @@
 import numpy as np
+from sklearn.neighbors import KNeighborsClassifier
+
+y_test = [0,1,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,0,1,0,1,0,1,0,0,0,0,0,0,0,1,1,0,1,0,1,0,0,0,0,0,1,0,1,1,0,0,0,1,0,0,1,0,1,0,0,0,1,1,1,0,0,0,0,1,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0,1,0,1,1]
+
+    # When the standard deviation is 0, avoid dividing by 0
+def safe_divide(numerator, denominator):
+    return np.divide(numerator, denominator, out=np.zeros_like(numerator), where=denominator != 0)
+
+def aggregator(n_nodes, centroids, n_neighbors, neighbors, test_id, test_coordinates, scores):
+    # FIXME: There is no weighting. Need to weight the centroid aggregation to decrease the influence of
+    # nodes that had a low accuracy
+
+    # Initialization
+    np_centroids = []
+    np_neighbors = []
+    np_scores = []
+    for node in range(n_nodes):
+        np_centroids.append(np.array(centroids[node]))
+        np_neighbors.append(np.array(neighbors[node]))
+        np_scores.append(np.array(scores[node]))
+
+    np_test = np.array(test_coordinates)
+
+    # Normalization and aggregation
+    normalized_centroids = []
+    normalized_neighbors = []
+
+    for node in range(n_nodes):
+        normalized_centroids.append((np_centroids[node] - np.mean(centroids[node], axis=0)) / np.std(np_centroids[node], axis=0))
+        normalized_neighbors.append((np_neighbors[node] - np.mean(neighbors[node], axis=0)) / np.std(neighbors[node], axis=0))
+
+    all_normalized_centroids = np.vstack(normalized_centroids)
+    all_normalized_neighbors = np.vstack(normalized_neighbors)
+
+    mean_aggregated_centroid = np.mean(all_normalized_centroids, axis=0)
+    std_dev_aggregated_centroid = np.std(all_normalized_centroids, axis=0)
+
+    normalized_test_datum = safe_divide(np_test - mean_aggregated_centroid, std_dev_aggregated_centroid)
+
+    # KNN Classification using all neighbors from all nodes
+    k = max(n_nodes*n_neighbors, 5)  # Number of neighbors for KNN
+    knn_classifier = KNeighborsClassifier(n_neighbors=k)
+    knn_classifier.fit(all_normalized_neighbors, np.zeros(n_nodes))  # Use 0 labels for training, as we're just using neighbors
+
+    # Predict the label for the normalized test datum
+    predicted_label = knn_classifier.predict([normalized_test_datum])[0]
+
+    return predicted_label == y_test[test_id]
 
 def example():
     # Examples come form:
@@ -31,10 +79,6 @@ def example():
     # Example scores (right one is the score in the JSON)
     node1_score = 1-0.112587
     node2_score = 1-0.066117
-
-    # When the standard deviation is 0, avoid dividing by 0
-    def safe_divide(numerator, denominator):
-        return np.divide(numerator, denominator, out=np.zeros_like(numerator), where=denominator != 0)
 
     # Normalize the centroids for each node
     normalized_node1_centroids = (node1_centroids - np.mean(node1_centroids, axis=0)) / np.std(node1_centroids, axis=0)

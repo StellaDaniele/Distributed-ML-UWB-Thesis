@@ -11,7 +11,7 @@ gcc_warning_suppression_options = "" # "2>nul"
 file_name_compilation = "compilation_strings"
 file_name_compilation_prefix = directory_compilation_strings + "\\" + file_name_compilation
 extension_file_compilation = ".bat"
-batch_dimension_compilation_files = 5896 # 16 compilation files (94320 compilation strings)
+batch_dimension_compilation_files = 5895 # 16 files, 94320 compilation strings (actual 1508, 24120 total)
 
 # Static values
 K = 2   # Number of clusters k-means
@@ -41,11 +41,15 @@ def generate_compilation_strings():
                     max_initial_thr = MEMORY_SIZE // 2
                     NODE_OFFSET = N_TRAIN_USED * (NODE_ID-1) #MEMORY_SIZE//N_NODES*(NODE_ID-1)
                     for CONFIDENCE in range(2): # False / True
-                        for CONFIDENCE_THR in (CONF_THR_LIST if CONFIDENCE else [0]):
+                        if CONFIDENCE:
+                            confidence_thr_list = CONF_THR_LIST
+                        else:
+                            confidence_thr_list = [0]
+                        for CONFIDENCE_THR in confidence_thr_list:
                             # The condition above avoids all the useless cases: when CONFIDENCE=0, CONFIDENCE_THR
                             # is not used by the program
                             for FILTER in FILTERS:
-                                for ONE_SHOT in range(2): # False / True
+                                for ONE_SHOT in range(2): # False / True  (actual: in [1])
                                     # When ONE_SHOT=0, INITIAL_THR and UPDATE_THR are not used. Therefore, they can be
                                     # set to 0
                                     if ONE_SHOT:

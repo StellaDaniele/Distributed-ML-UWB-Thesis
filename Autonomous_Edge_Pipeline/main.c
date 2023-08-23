@@ -170,7 +170,7 @@ int main()
             fprintf(fptr, ",");
             fprintf(fptr, "\"neighbors\":[");
             for(int i = 0; i < K_NEIGHBOR; i++){
-                fprintf(fptr, "{\"score\":%f,\"coordinates\":[",datapoint[i].score);
+                fprintf(fptr, "{\"score\":%f,\"label\":%d,\"coordinates\":[",datapoint[i].score, datapoint[i].label);
                 fprintf(fptr, "%f",datapoint[i].coords[0]);
                 for(int ii = 1; ii < N_FEATURE; ii++){
                     fprintf(fptr, ",%f",datapoint[i].coords[ii]);

@@ -28,6 +28,7 @@ struct neighbour
 struct DataPoint {
     float coords[N_FEATURE];
     float score;
+    unsigned char label;
 };
 
 int knn_classification(float X[], float training_samples[MEMORY_SIZE+UPDATE_THR][N_FEATURE], int y_train[MEMORY_SIZE+UPDATE_THR], int n_samples, struct DataPoint nearest_neighbors[K_NEIGHBOR]);

@@ -59,6 +59,7 @@ int knn_classification(float X[], float training_samples[MEMORY_SIZE+UPDATE_THR]
             int neighbor_id = neighbours[n].id;
             if(nearest_neighbors != NULL){
                 nearest_neighbors[n].score = neighbours[n].score;
+                nearest_neighbors[n].label = y_train[neighbor_id];
                 memcpy(nearest_neighbors[n].coords, training_samples[neighbor_id], N_FEATURE * sizeof(float));
             }
         }

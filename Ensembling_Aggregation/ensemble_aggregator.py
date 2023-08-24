@@ -7,7 +7,7 @@ y_test = [0,1,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,
 def safe_divide(numerator, denominator):
     return np.divide(numerator, denominator, out=np.zeros_like(numerator), where=denominator != 0)
 
-def aggregator(n_nodes, centroids, n_neighbors, neighbors, test_id, test_coordinates, scores):
+def aggregator(n_nodes, centroids, n_neighbors, neighbors, test_id, test_coordinates, scores, neighbors_labels):
     # FIXME: There is no weighting. Need to weight the centroid aggregation to decrease the influence of
     # nodes that had a low accuracy
 
@@ -15,10 +15,12 @@ def aggregator(n_nodes, centroids, n_neighbors, neighbors, test_id, test_coordin
     np_centroids = []
     np_neighbors = []
     np_scores = []
+    np_labels = []
     for node in range(n_nodes):
         np_centroids.append(np.array(centroids[node]))
         np_neighbors.append(np.array(neighbors[node]))
         np_scores.append(np.array(scores[node]))
+        np_labels.append(np.array(neighbors_labels[node]))
 
     np_test = np.array(test_coordinates)
 
@@ -27,8 +29,9 @@ def aggregator(n_nodes, centroids, n_neighbors, neighbors, test_id, test_coordin
     normalized_neighbors = []
 
     for node in range(n_nodes):
-        normalized_centroids.append((np_centroids[node] - np.mean(centroids[node], axis=0)) / np.std(np_centroids[node], axis=0))
-        normalized_neighbors.append((np_neighbors[node] - np.mean(neighbors[node], axis=0)) / np.std(neighbors[node], axis=0))
+        normalized_centroids.append(safe_divide(np_centroids[node] - np.mean(centroids[node], axis=0), np.std(np_centroids[node], axis=0)))
+        #normalized_neighbors.append((np_neighbors[node] - np.mean(neighbors[node], axis=0)) / np.std(neighbors[node], axis=0))
+        normalized_neighbors.append(safe_divide(np.array(neighbors[node]) - np.mean(neighbors[node], axis=0), np.std(neighbors[node], axis=0)))
 
     all_normalized_centroids = np.vstack(normalized_centroids)
     all_normalized_neighbors = np.vstack(normalized_neighbors)
@@ -38,10 +41,16 @@ def aggregator(n_nodes, centroids, n_neighbors, neighbors, test_id, test_coordin
 
     normalized_test_datum = safe_divide(np_test - mean_aggregated_centroid, std_dev_aggregated_centroid)
 
+    # print("Shape of all_normalized_neighbors:", all_normalized_neighbors.shape)
+    # print("Shape of labels array:", np.zeros(n_nodes).shape)
+
     # KNN Classification using all neighbors from all nodes
-    k = max(n_nodes*n_neighbors, 5)  # Number of neighbors for KNN
+    #k = max(n_nodes*n_neighbors, 5)  # Number of neighbors for KNN
+    k = min(min(n_nodes*n_neighbors, 5), all_normalized_neighbors.shape[0])
+
+    # Train the KNN classifier
     knn_classifier = KNeighborsClassifier(n_neighbors=k)
-    knn_classifier.fit(all_normalized_neighbors, np.zeros(n_nodes))  # Use 0 labels for training, as we're just using neighbors
+    knn_classifier.fit(all_normalized_neighbors, np.hstack(neighbors_labels))  # assuming neighbors_labels is a list of numpy arrays
 
     # Predict the label for the normalized test datum
     predicted_label = knn_classifier.predict([normalized_test_datum])[0]

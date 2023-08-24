@@ -33,7 +33,9 @@ def extract_data(folder_name):
     n_tests = len(nodes_data[0]["pipeline_iterations"][0]["test_data"])
     n_neighbors = len(nodes_data[0]["pipeline_iterations"][0]["test_data"][0]["neighbors"])
     neighbors = [[None] * n_neighbors for _ in range(len(nodes_data))]
+    #neighbors = [[] for _ in range(len(nodes_data))]
     scores = [[None] * n_neighbors for _ in range(len(nodes_data))]
+    neighbors_labels = [[None] * n_neighbors for _ in range(len(nodes_data))]
     correctly_classified = 0
 
     for test in range(n_tests):
@@ -41,10 +43,11 @@ def extract_data(folder_name):
         #print(test_coordinates)
         for node in range(n_nodes):
             for neighbor in range(n_neighbors):
-                neighbors[node][neighbor] = nodes_data[0]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["coordinates"]
-                scores[node][neighbor] = 1-nodes_data[0]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["score"]
-        correctly_classified += int(aggregator(n_nodes, centroids, n_neighbors, neighbors, test, test_coordinates, scores))
-
+                neighbors[node][neighbor] = nodes_data[node]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["coordinates"]
+                #neighbors[node].append(nodes_data[node]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["coordinates"])
+                scores[node][neighbor] = 1-nodes_data[node]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["score"]
+                neighbors_labels[node][neighbor] = nodes_data[node]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["label"]
+        correctly_classified += int(aggregator(n_nodes, centroids, n_neighbors, neighbors, test, test_coordinates, scores, neighbors_labels))
     accuracy = correctly_classified/n_tests
 
     print("Before aggregation:")

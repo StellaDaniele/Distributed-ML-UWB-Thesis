@@ -47,13 +47,13 @@ def extract_data(folder_name, writer):
         correctly_classified += int(aggregator_scores(n_nodes, n_neighbors, neighbors, test_coordinates, test,scores, neighbors_labels))
     accuracy = correctly_classified/n_tests
 
-    writer.writerow([folder_name,accuracies_before,accuracy])
+    writer.writerow([folder_name]+folder_name.split('_')[1:]+[accuracies_before,accuracy])
 
 
 if __name__ == "__main__":
     output = open("algorithms_comparison.csv", "w", newline="")
     writer = csv.writer(output)
-    writer.writerow(["settings","original","accuracy_scores"])
+    writer.writerow(["Folder_name","N_NODES","K_NEIGHBOR","MEMORY_SIZE","CONFIDENCE","CONFIDENCE_THR","FILTER","ONE_SHOT","INITIAL_THR","UPDATE_THR","K","ITERATION","N_TRAIN","N_TRAIN_USED","N_TEST","N_TEST_USED","original","accuracy_scores"])
     # Get all the subdirs
     for subfolder_name in os.listdir(folder_path):
         subfolder_path = os.path.join(folder_path, subfolder_name)

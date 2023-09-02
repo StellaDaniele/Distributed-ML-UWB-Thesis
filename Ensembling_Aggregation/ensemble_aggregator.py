@@ -1,16 +1,44 @@
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
 
 y_test = [0,1,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,0,1,0,1,0,1,0,0,0,0,0,0,0,1,1,0,1,0,1,0,0,0,0,0,1,0,1,1,0,0,0,1,0,0,1,0,1,0,0,0,1,1,1,0,0,0,0,1,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0,1,0,1,1]
 
-    # When the standard deviation is 0, avoid dividing by 0
+# When the standard deviation is 0, avoid dividing by 0
 def safe_divide(numerator, denominator):
     return np.divide(numerator, denominator, out=np.zeros_like(numerator), where=denominator != 0)
 
-def aggregator(n_nodes, centroids, n_neighbors, neighbors, test_id, test_coordinates, scores, neighbors_labels):
-    # FIXME: There is no weighting. Need to weight the centroid aggregation to decrease the influence of
-    # nodes that had a low accuracy
+def aggregator_scores(n_nodes, n_neighbors, neighbors, test_coordinates, test_id, scores, neighbors_labels):
+    all_neighbors_data = []
+    for node in range(n_nodes):
+        # print("Node="+str(node))
+        # print("\tNeighbors:")
+        for neighbor in range(n_neighbors):
+            all_neighbors_data.append((neighbors[node][neighbor], scores[node][neighbor], neighbors_labels[node][neighbor]))
+            # print(neighbors[node][neighbor], end="\t")
+            # print(scores[node][neighbor], end="\t")
+            # print(neighbors_labels[node][neighbor])
+    sorted_neighbors = sorted(all_neighbors_data, key=lambda pair:pair[1], reverse=True)
+    #print(sorted_neighbors)
 
+    weighted_votes = {}
+    k = min(n_neighbors, 5)
+    for i in range(k):
+        _, score, label = sorted_neighbors[i]
+        if label not in weighted_votes:
+            weighted_votes[label] = 0
+        weighted_votes[label] += score
+    predicted_label = max(weighted_votes, key=weighted_votes.get)
+
+    # print("test_coordinates="+str(test_coordinates[test_id]),end="\t")
+    # print("test_label="+str(y_test[test_id]))
+    # print("predicted_label=\t"+str(predicted_label))
+    return predicted_label == y_test[test_id]
+
+
+def aggregator_coordinates(n_nodes, n_neighbors, neighbors, test_coordinates, test_id, scores, neighbors_labels):
+    pass
+
+
+def aggregator_coordinates_normalization(n_nodes, centroids, n_neighbors, neighbors, tests_coordinates, scores, neighbors_labels):
     # Initialization
     np_centroids = []
     np_neighbors = []
@@ -22,7 +50,9 @@ def aggregator(n_nodes, centroids, n_neighbors, neighbors, test_id, test_coordin
         np_scores.append(np.array(scores[node]))
         np_labels.append(np.array(neighbors_labels[node]))
 
-    np_test = np.array(test_coordinates)
+    np_test = []
+    for test_id in range(len(y_test)):
+        np_test.append(np.array(tests_coordinates[test_id]))
 
     # Normalization and aggregation
     normalized_centroids = []
@@ -39,23 +69,27 @@ def aggregator(n_nodes, centroids, n_neighbors, neighbors, test_id, test_coordin
     mean_aggregated_centroid = np.mean(all_normalized_centroids, axis=0)
     std_dev_aggregated_centroid = np.std(all_normalized_centroids, axis=0)
 
-    normalized_test_datum = safe_divide(np_test - mean_aggregated_centroid, std_dev_aggregated_centroid)
+
+    normalized_tests = []
+    for test_id in range(len(y_test)):
+        normalized_tests.append(safe_divide(np_test[test_id] - mean_aggregated_centroid, std_dev_aggregated_centroid))
+    #normalized_test_datum = safe_divide(np_test - mean_aggregated_centroid, std_dev_aggregated_centroid)
 
     # print("Shape of all_normalized_neighbors:", all_normalized_neighbors.shape)
     # print("Shape of labels array:", np.zeros(n_nodes).shape)
 
     # KNN Classification using all neighbors from all nodes
     #k = max(n_nodes*n_neighbors, 5)  # Number of neighbors for KNN
-    k = min(min(n_nodes*n_neighbors, 5), all_normalized_neighbors.shape[0])
-
-    # Train the KNN classifier
-    knn_classifier = KNeighborsClassifier(n_neighbors=k)
-    knn_classifier.fit(all_normalized_neighbors, np.hstack(neighbors_labels))  # assuming neighbors_labels is a list of numpy arrays
+    k = min(n_nodes*n_neighbors, 5)
 
     # Predict the label for the normalized test datum
-    predicted_label = knn_classifier.predict([normalized_test_datum])[0]
+    predicted_labels = 0
+    correctly_classified = 0
+    for i in range(len(y_test)):
+        if(predicted_labels[i] == y_test[i]):
+            correctly_classified += 1
 
-    return predicted_label == y_test[test_id]
+    return correctly_classified
 
 def example():
     # Examples come form:

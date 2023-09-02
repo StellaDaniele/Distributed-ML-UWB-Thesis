@@ -11,7 +11,7 @@ gcc_warning_suppression_options = "" # "2>nul"
 file_name_compilation = "compilation_strings"
 file_name_compilation_prefix = directory_compilation_strings + "\\" + file_name_compilation
 extension_file_compilation = ".bat"
-batch_dimension_compilation_files = 5895 # 16 files, 94320 compilation strings (actual 1508, 24120 total)
+batch_dimension_compilation_files = 5895 # 16 files, 94320 compilation strings (actual 503, 8040 total)
 
 # Static values
 K = 2   # Number of clusters k-means
@@ -48,7 +48,7 @@ def generate_compilation_strings():
                         for CONFIDENCE_THR in confidence_thr_list:
                             # The condition above avoids all the useless cases: when CONFIDENCE=0, CONFIDENCE_THR
                             # is not used by the program
-                            for FILTER in FILTERS:
+                            for FILTER in FILTERS: # (actual: in ['CONF'])
                                 for ONE_SHOT in range(2): # False / True  (actual: in [1])
                                     # When ONE_SHOT=0, INITIAL_THR and UPDATE_THR are not used. Therefore, they can be
                                     # set to 0

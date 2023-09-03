@@ -1,4 +1,5 @@
 import numpy as np
+from math import sqrt
 
 y_test = [0,1,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,0,1,0,1,0,1,0,0,0,0,0,0,0,1,1,0,1,0,1,0,0,0,0,0,1,0,1,1,0,0,0,1,0,0,1,0,1,0,0,0,1,1,1,0,0,0,0,1,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0,1,0,1,1]
 
@@ -34,8 +35,73 @@ def aggregator_scores(n_nodes, n_neighbors, neighbors, test_coordinates, test_id
     return predicted_label == y_test[test_id]
 
 
-def aggregator_coordinates(n_nodes, n_neighbors, neighbors, test_coordinates, test_id, scores, neighbors_labels):
-    pass
+def aggregator_coordinates(n_nodes, centroids, n_neighbors, neighbors, test_coordinates, scores, neighbors_labels):
+    correctly_classified_counter_test = 0 # Using distance to the test data
+    correctly_classified_counter_centroids = 0 # Using distance to the centroids
+    averaged_centroids = [[sum(inner_lists[i][j] for inner_lists in centroids) / len(centroids) for j in range(len(centroids[0][0]))] for i in range(len(centroids[0]))]
+    # print("centroids:")
+    # print(centroids)
+    # print("New centroids")
+    # print(averaged_centroids)
+    # print()
+    for test in range(len(y_test)):
+        all_neighbors_data = []
+        for node in range(n_nodes):
+            for neighbor in range(n_neighbors):
+                all_neighbors_data.append((neighbors[test][node][neighbor]))
+        # Euclidean distance neighbors
+        new_neighbors_test = [] # Closest to the test data
+        new_neighbors_centroids = [] # Closest to the centroids
+        for neighbor in range(len(all_neighbors_data)):
+            distance0 = 0
+            distance1 = 0
+            for i in range(len(all_neighbors_data[neighbor])):
+                distance0 += (all_neighbors_data[neighbor][i] - averaged_centroids[0][i]) ** 2
+                distance1 += (all_neighbors_data[neighbor][i] - averaged_centroids[1][i]) ** 2
+            distance0 = sqrt(distance0)
+            distance1 = sqrt(distance1)
+            # print(all_neighbors_data[neighbor],end="\t")
+            # print("distance0="+str(distance0), end="\t")
+            # print("distance1="+str(distance1))
+            distance_from_centroid = min(distance0,distance1)
+            distance_from_test = 0
+            for i in range(len(all_neighbors_data[neighbor])):
+                distance_from_test += (all_neighbors_data[neighbor][i] - test_coordinates[test][i]) ** 2
+            distance_from_test = sqrt(distance_from_test)
+            new_neighbors_test.append([all_neighbors_data[neighbor],
+                                 distance_from_test,
+                                 1 if distance1 < distance0 else 0])
+            new_neighbors_centroids.append([all_neighbors_data[neighbor],
+                                 distance_from_centroid,
+                                 1 if distance1 < distance0 else 0])
+
+        sorted_neighbors_test = sorted(new_neighbors_test, key=lambda pair:pair[1], reverse=False)
+        sorted_neighbors_centroids = sorted(new_neighbors_centroids, key=lambda pair:pair[1], reverse=False)
+        # print("sorted_neighbors:")
+        # print(sorted_neighbors)
+        weighted_votes = {}
+        k = min(n_neighbors, 5)
+        for i in range(k):
+            _, distance, label = sorted_neighbors_test[i]
+            if label not in weighted_votes:
+                weighted_votes[label] = 0
+            weighted_votes[label] += distance
+        predicted_label = min(weighted_votes, key=weighted_votes.get)
+        # print(predicted_label)
+        correctly_classified_counter_test += int(predicted_label == y_test[test])
+
+        weighted_votes = {}
+        k = min(n_neighbors, 5)
+        for i in range(k):
+            _, distance, label = sorted_neighbors_centroids[i]
+            if label not in weighted_votes:
+                weighted_votes[label] = 0
+            weighted_votes[label] += distance
+        predicted_label = min(weighted_votes, key=weighted_votes.get)
+        # print(predicted_label)
+        correctly_classified_counter_centroids += int(predicted_label == y_test[test])
+    # print()
+    return correctly_classified_counter_test,correctly_classified_counter_centroids
 
 
 def aggregator_coordinates_normalization(n_nodes, centroids, n_neighbors, neighbors, tests_coordinates, scores, neighbors_labels):

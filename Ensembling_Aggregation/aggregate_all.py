@@ -4,6 +4,7 @@ import csv
 
 from ensemble_aggregator import aggregator_scores
 from ensemble_aggregator import aggregator_coordinates
+from ensemble_aggregator import aggregator_coordinates_normalization
 
 folder_path = "../Others/prova/"
 
@@ -25,20 +26,24 @@ def extract_data(folder_name, writer):
     centroids = []
     correctly_classified_before = []
     accuracies_before = []
-
+    centroids_to_swap = []
+    counter = 0
     for node in nodes_data:
         first_iteration = node["pipeline_iterations"][0]
         centroids.append(first_iteration["final_centroids"])
         correctly_classified_before.append(first_iteration["correctly_classified_samples"])
         accuracies_before.append(first_iteration["accuracy"])
+        centroids_to_swap.append(first_iteration["CENTROIDS_SWAPPED"])
+        if centroids_to_swap[counter]:
+            centroids[counter][0], centroids[counter][1] = centroids[counter][1], centroids[counter][0]
+        counter += 1
+
 
     neighbors = [[[None] * n_neighbors for _ in range(n_nodes)] for _ in range(n_tests)]
     scores = [[[None] * n_neighbors for _ in range(n_nodes)] for _ in range(n_tests)]
     neighbors_labels = [[[None] * n_neighbors for _ in range(n_nodes)] for _ in range(n_tests)]
 
     correctly_classified_scores = 0
-    correctly_classified_coordinates = 0
-    correctly_classified_coordinates_normalization = 0
     test_coordinates = []
 
     for test in range(n_tests):
@@ -47,22 +52,32 @@ def extract_data(folder_name, writer):
             for neighbor in range(n_neighbors):
                 neighbors[test][node][neighbor] = nodes_data[node]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["coordinates"]
                 scores[test][node][neighbor] = nodes_data[node]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["score"]
-                neighbors_labels[test][node][neighbor] = nodes_data[node]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["label"]
+                if centroids_to_swap[node]:
+                    neighbors_labels[test][node][neighbor] = 1 - nodes_data[node]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["label"]
+                else:
+                    neighbors_labels[test][node][neighbor] = nodes_data[node]["pipeline_iterations"][0]["test_data"][test]["neighbors"][neighbor]["label"]
 
         correctly_classified_scores += int(aggregator_scores(n_nodes, n_neighbors, neighbors[test], test_coordinates, test, scores[test], neighbors_labels[test]))
     accuracy_score = correctly_classified_scores / n_tests
 
-    correctly_classified_coordinates = aggregator_coordinates(n_nodes, centroids, n_neighbors, neighbors, test_coordinates, scores, neighbors_labels)
-    accuracy_coordinates = correctly_classified_coordinates / n_tests
+    correctly_classified_coordinates_test, correctly_classified_coordinates_centroids = aggregator_coordinates(n_nodes, centroids, n_neighbors, neighbors, test_coordinates, scores, neighbors_labels)
+    accuracy_coordinates_test = correctly_classified_coordinates_test / n_tests
+    accuracy_coordinates_centroids = correctly_classified_coordinates_centroids / n_tests
+
+    # correctly_classified_coordinates_normalization = aggregator_coordinates_normalization(n_nodes, centroids, n_neighbors, neighbors, test_coordinates, scores, neighbors_labels)
+    # accuracy_coordinates_normalization = correctly_classified_coordinates_normalization / n_tests
     # Print on CSV the folder name, the settings (1 per column), and the accuracies
-    writer.writerow([folder_name] + folder_name.split('_')[1:] + [accuracies_before, accuracy_score, accuracy_coordinates])
+
+    writer.writerow([folder_name] + folder_name.split('_')[1:] + [accuracies_before, accuracy_score, accuracy_coordinates_test,accuracy_coordinates_centroids])
 
 
 
 if __name__ == "__main__":
     output = open("algorithms_comparison.csv", "w", newline="")
     writer = csv.writer(output)
-    writer.writerow(["Folder_name","N_NODES","K_NEIGHBOR","MEMORY_SIZE","CONFIDENCE","CONFIDENCE_THR","FILTER","ONE_SHOT","INITIAL_THR","UPDATE_THR","K","ITERATION","N_TRAIN","N_TRAIN_USED","N_TEST","N_TEST_USED","original","accuracy_scores"])
+    writer.writerow(["Folder_name","N_NODES","K_NEIGHBOR","MEMORY_SIZE","CONFIDENCE","CONFIDENCE_THR","FILTER",
+                     "ONE_SHOT","INITIAL_THR","UPDATE_THR","K","ITERATION","N_TRAIN","N_TRAIN_USED","N_TEST",
+                     "N_TEST_USED","original","accuracy_scores","accuracy_coordinates_test","accuracy_coordinates_centroids"])
     # Get all the subdirs
     for subfolder_name in os.listdir(folder_path):
         subfolder_path = os.path.join(folder_path, subfolder_name)

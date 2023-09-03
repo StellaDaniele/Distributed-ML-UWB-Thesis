@@ -6,7 +6,7 @@ from ensemble_aggregator import aggregator_scores
 from ensemble_aggregator import aggregator_coordinates
 from ensemble_aggregator import aggregator_coordinates_normalization
 
-folder_path = "../Others/prova/"
+folder_path = "../Simulation/Logs/"
 
 def extract_data(folder_name, writer):
     path = folder_path + folder_name

@@ -64,11 +64,15 @@ def extract_data(folder_name, writer):
     accuracy_coordinates_test = correctly_classified_coordinates_test / n_tests
     accuracy_coordinates_centroids = correctly_classified_coordinates_centroids / n_tests
 
-    # correctly_classified_coordinates_normalization = aggregator_coordinates_normalization(n_nodes, centroids, n_neighbors, neighbors, test_coordinates, scores, neighbors_labels)
-    # accuracy_coordinates_normalization = correctly_classified_coordinates_normalization / n_tests
-    # Print on CSV the folder name, the settings (1 per column), and the accuracies
+    correctly_classified_coordinates_normalization_test, correctly_classified_coordinates_normalization_centroids = aggregator_coordinates_normalization(n_nodes, centroids, n_neighbors, neighbors, test_coordinates, scores, neighbors_labels)
+    accuracy_coordinates_normalization_test = correctly_classified_coordinates_normalization_test / n_tests
+    accuracy_coordinates_normalization_centroids = correctly_classified_coordinates_normalization_centroids / n_tests
 
-    writer.writerow([folder_name] + folder_name.split('_')[1:] + [accuracies_before, accuracy_score, accuracy_coordinates_test,accuracy_coordinates_centroids])
+
+    # Print on CSV the folder name, the settings (1 per column), and the accuracies
+    writer.writerow([folder_name] + folder_name.split('_')[1:] +
+                    [accuracies_before, accuracy_score, accuracy_coordinates_test,accuracy_coordinates_centroids,
+                     accuracy_coordinates_normalization_test,accuracy_coordinates_normalization_centroids])
 
 
 
@@ -77,7 +81,8 @@ if __name__ == "__main__":
     writer = csv.writer(output)
     writer.writerow(["Folder_name","N_NODES","K_NEIGHBOR","MEMORY_SIZE","CONFIDENCE","CONFIDENCE_THR","FILTER",
                      "ONE_SHOT","INITIAL_THR","UPDATE_THR","K","ITERATION","N_TRAIN","N_TRAIN_USED","N_TEST",
-                     "N_TEST_USED","original","accuracy_scores","accuracy_coordinates_test","accuracy_coordinates_centroids"])
+                     "N_TEST_USED","original","accuracy_scores","accuracy_coordinates_test",
+                     "accuracy_coordinates_centroids","accuracy_coordinates_normalization_test","accuracy_coordinates_normalization_centroids"])
     # Get all the subdirs
     for subfolder_name in os.listdir(folder_path):
         subfolder_path = os.path.join(folder_path, subfolder_name)

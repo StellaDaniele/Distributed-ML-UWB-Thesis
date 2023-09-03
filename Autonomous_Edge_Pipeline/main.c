@@ -198,10 +198,14 @@ int main()
             }
         }
         fprintf(fptr, "],");
+        bool centroids_swapped = false;
         if (acc_perm > acc)
         {
             acc = acc_perm;
+            centroids_swapped = true;
         }
+
+        fprintf(fptr, "\"CENTROIDS_SWAPPED\":%s,",((centroids_swapped == 1)?"true":"false"));
 
         #ifdef AutoDT
         fprintf (fptr, "^ Decision Tree:\n\n");

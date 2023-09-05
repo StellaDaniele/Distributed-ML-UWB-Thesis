@@ -1,0 +1,207 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Template for Bachelor degrees
+% DISI - Dipartimento di Ingegneria e Scienza dell’Informazione
+% DISI - Department of Information Engineering and Computer Science
+%
+% update 2020-08-30
+%
+% To generate pdf 
+% pdflatex __filename__.tex
+% bibtex __file_name__.aux
+% pdflatex __file_name__.tex
+% pdflatex __file_name__.tex
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% 2 side format
+\documentclass[epsfig,a4paper,11pt,titlepage,twoside,openany]{book}
+\usepackage{epsfig}
+\usepackage{plain}
+\usepackage{setspace}
+\usepackage[paperheight=29.7cm,paperwidth=21cm,outer=1.5cm,inner=2.5cm,top=2cm,bottom=2cm]{geometry} % layout setting
+\usepackage{titlesec} % custom setup title of chanpter
+% \usepackage{newtxtext,newtxmath} % times new roman
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{booktabs}
+% Configuration for the listings package
+\lstset{
+    basicstyle=\ttfamily\small,
+    frame=single,                     % adds a frame around the code
+    numbers=left,                     % line numbers on the left
+    numberstyle=\tiny,                % make line numbers tiny
+    tabsize=4,                        % set tab space width
+    breaklines=true,                  % break too long lines
+    keywordstyle=\bfseries,           % style for keywords (if, for, etc.)
+    columns=fullflexible
+}
+
+%%%%%%%%%%%%%%
+% support for accented letters
+%
+%\usepackage[latin1]{inputenc} % Windows;
+\usepackage[utf8]{inputenc} % Linux (unicode package is required);
+%\usepackage[applemac]{inputenc} % Mac.
+
+\singlespacing
+
+% italian language
+%\usepackage[italian]{babel}
+\usepackage[hidelinks]{hyperref}
+\begin{document}
+
+  % no page number
+  \pagenumbering{gobble} 
+  \input{front}
+
+  %\clearpage
+  \newpage
+\null
+\newpage
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Note
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Thanks/ Acknowledgements section is optional
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \input{acknowledgements}
+  \clearpage
+  \pagestyle{plain} % no heading, footer with centered page number
+
+  
+  % page number with Arabic format
+  \mainmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Note
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The maximum number of pages is 30, including:
+%%   index
+%%   abstract
+%%   chapters
+%% Excluding:
+%%   frontispiece
+%%   acknowledgements 
+%%   attachments
+%%
+%% For further details and updated rules, please check the guidelines.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    % index
+    \tableofcontents
+    \clearpage
+    
+    
+          
+    % group to define space between chapters
+    \begingroup
+      % no page break between chapters
+      % override clear page commands
+      \renewcommand{\cleardoublepage}{} 
+      \renewcommand{\clearpage}{} 
+      % override format of title chapter
+      % from
+      %   Chapter X
+      %   Title
+      % to
+      %   X   Title
+      
+      \titleformat{\chapter}
+        {\normalfont\Huge\bfseries}{\thechapter}{1em}{}
+        
+      \titlespacing*{\chapter}{0pt}{0.59in}{0.02in}
+      \titlespacing*{\section}{0pt}{0.20in}{0.02in}
+      \titlespacing*{\subsection}{0pt}{0.10in}{0.02in}
+      
+      % summary / abstract
+      \input{abstract}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Note
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The abstract is a short summary of the work describing the target,
+%% the subject of the thesis, the methodology and the techniques,
+%% the data collection and elaboration, the explanation of the
+%% reached results and the conclusion.
+%% The abstract of the dissertation must have a maximum length of 3 pages
+%% and must include the following information:
+%%   context and motivation
+%%   short summary of the main problem you have dealt with
+%%   developed and /or used techniques 
+%%   reached results, the personal contribution of the student has to be highlighted
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%      
+      
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      % chapters
+      %
+      % \input or \include
+      %
+      \input{chapter0}
+      \input{chapter1}
+      \input{chapter2}
+      \input{chapter3}
+      \input{chapter4}
+      \input{chapter5}
+      
+      
+    \endgroup
+
+
+    % bibliography - bibtex format
+    %
+    % add chapter to index
+    \addcontentsline{toc}{chapter}{Bibliography}
+    % alphabetical order of authors
+    \bibliographystyle{plain}
+    \bibliography{biblio}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Nota
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% In the bibliography, all the sources consulted for the dissertation 
+%% have to be cited and listed in alphabetical order by the 
+%% first author's surname.
+%%
+%% According to the source material, the quotation has to be as follows:
+%%
+%% BOOKS
+%% Surname and initial/s of the name/s of the author/s, date of edition,
+%% publishing house and (if applicable) number of edition.
+%% 
+%% JOURNAL ARTICLES 
+%% Surname and initial/s of the first name/s of the author/s,
+%% title of the article, name of the journal, volume number, issue number
+%% and page numbers.
+%% 
+%% CONFERENCE PAPERS
+%% Surname and initial/s of the name/s of the author/s,
+%% year of the conference, title of the article, name of the conference,
+%% place of the conference, conference dates, page numbers.
+%% 
+%% CITING WEB RESOURCES
+%% The consulted webpages have to be listed in alphabetical order. 
+%% It is necessary to:
+%%   - Copy the specific URL (the web address) of the consulted webpage
+%%   - If available, indicate the surname and first name of the author/s,
+%%     the title and subtitle of the text
+%%   - If available, indicate the last date you retrieved the webpage
+%%     (day/month/year).   
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+
+    \titleformat{\chapter}
+        {\normalfont\Huge\bfseries}{Appendix \thechapter}{1em}{}
+    % Appendix / attachment section - optional
+    \appendix
+    \input{attachments}
+
+\end{document}

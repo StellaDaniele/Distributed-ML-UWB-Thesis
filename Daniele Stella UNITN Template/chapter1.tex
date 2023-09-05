@@ -1,0 +1,121 @@
+\chapter{Background}
+\label{cha:background} 
+
+\section{Ultra-Wideband (UWB)}
+\label{sec:UWB}
+Ultra-wideband (UWB) is a wireless communication technology that utilizes a substantial portion of the radio frequency (RF) spectrum to transmit data. Characterized by its low power consumption and high bandwidth capability, UWB is unique from other wireless communication methods due to its broad bandwidth, typically exceeding 500 MHz and in certain cases spanning several gigahertz (GHz)\cite{what_is_UWB}. This section offers an overview of the essential characteristics and applications of UWB. Later on, I will delve into the specific attributes and applications of Spark radios.
+
+\subsection{The fundamental characteristics of UWB}
+\label{UWB_fundamental_characteristics}
+UWB is marked by several key features, with the following three being most notable:
+\begin{itemize}
+    \item \textit{Bandwidth:} UWB's hallmark is its expansive bandwidth. A UWB signal, by definition, has a bandwidth larger than either 500 MHz or 20\% of the center frequency, as specified by the Federal Communications Commission (FCC) \cite{FCC}.
+    \item \textit{Power Spectral Density (PSD):} UWB systems predominantly function at very low power levels, often beneath the noise floor of traditional narrowband systems. Such low power spectral density ensures that UWB can operate alongside other wireless services without causing interference\cite{paper_UWB_characteristics}.
+    \item \textit{Multipath Resistance:} The wide bandwidth of UWB signals grants them inherent resistance to multipath fading, a common issue in wireless communications. This quality makes UWB particularly adept for settings with numerous reflective surfaces, like indoor or urban environments\cite{paper_UWB_characteristics}.
+
+\end{itemize}
+
+
+\subsection{Applications of UWB}
+\label{UWB_applications}
+Thanks to its distinct features, UWB has garnered attention in various sectors. Highlighted below are its main applications:
+\begin{itemize}
+    \item \textit{Precision Ranging and Localization:} UWB's sharp time resolution, a product of its wide bandwidth, enables exact measurement of the TOF (time of flight) of signals. This makes it invaluable for pursuits like indoor positioning, asset tracking, and through-wall imaging\cite{paper_UWB_characteristics}.
+    \item \textit{High-speed Short-range Communication:} UWB's vast bandwidth capacity makes it fit for high data rate applications, such as wireless personal area networks (WPAN) and wireless USB\cite{paper_UWB_characteristics}.
+    \item \textit{Radar and Imaging Systems:} The capacity of UWB to detect delicate temporal nuances has proven helpful for ground-penetrating radars and through-wall imaging systems, especially in emergency response situations\cite{paper_UWB_characteristics}.
+
+\end{itemize}
+
+\subsection{Comparison of Ultra-Wide Band (UWB) with Other Wireless Technologies}
+\label{UWB_comparison}
+The arena of wireless communication is replete with diverse technologies, each designed for particular applications and settings. Among them, UWB is distinguished by its unique spectral and temporal properties. In the following segment, I juxtapose UWB against several widespread wireless technologies: Wi-Fi, Bluetooth, and Zigbee. As this section offers a broad overview and is not the central focus of my research, I've summarized the chief characteristics and distinctions in Table 2.1\cite{comparison_paper}\cite{comparison_uwb_wikipedia}.
+%[https://en.wikipedia.org/wiki/Comparison_of_wireless_data_standards][https://www.igi-global.com/chapter/comparing-zigbee-bluetooth-uwb/17624][https://arxiv.org/pdf/1409.6884]
+
+
+\begin{table}[htbp]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|X|X|X|l|X|}
+\hline
+Technology               & Bandwidth                         & Data Rate                                                                & Range                               & Power Consumption & Latency         & Primary Use Cases                                        \\
+\hline
+UWB                      & 500 MHz                           & 480 Mbps                                                                 & 100 m indoor / 500 m   outdoor      & 1-2 mW            & 10-20 ns        & RTLS1, wireless   peripherals, automotive.               \\
+\hline
+Wi-Fi                    & 20 MHz - 160 MHz                  & 54 Mbps - 10 Gbps   (Wi-Fi 6E)                                           & 100 m indoor / 300 m   outdoor      & 1-5 W             & 10-50 ms        & Internet access, file   sharing                          \\
+\hline
+Bluetooth                & 1 MHz - 2.4 GHz                   & 1 Mbps - 3 Mbps   (Bluetooth 5.2)                                        & 10 m indoor / 100 m   outdoor       & 0.01 - 0.5 W      & 3-10 ms         & Wireless audio, smart   home devices, wearables          \\
+\hline
+Zigbee & 2.4 GHz - 915   MHz/sub-GHz bands & 250 kbps - 2 Mbps   (Zigbee PRO), or up to 100 kbps (Zigbee Green Power) & 100 m indoor /   several km outdoor & $<$ 0.1 W            & $<$ 30 ms          & Home automation,   smart lighting, industrial automation \\
+\hline
+\end{tabularx}
+\caption{Comparison of wireless technologies}
+\end{table}
+
+Note that the attributes in the table represent general trends and might differ across brands and models. For example, many low-power UWB radios consume less than 1-2 mW but offer reduced data rates. The Decawave DW1000 radios, popular across a range of applications, support a data rate of approximately 6.8 Mbps\cite{DW1000_product_brief}. The choice between these technologies is contingent upon the specific needs of the application at hand.
+%[https://www.qorvo.com/products/d/da007945]. On the other hand, the Spark SR1020 radios reach up to 10 Mbps [Products | High-performance UWB Transceivers | Spark UWB Spark microsystems].
+
+
+
+\subsection{Spark SR1020 transceivers}
+\label{spark_sr1020}
+Spark Microsystems, a trailblazing semiconductor entity, leads in developing ultra-low power wireless communication solutions tailored for the rapidly growing Internet of Things (IoT) domain. Their groundbreaking patented technologies have resulted in a wireless transceiver that significantly outperforms competitors, especially in power efficiency. Comprehensive details about Spark Microsystems are accessible on their official website, \url{www.sparkmicro.com}. A detailed exploration of the Spark SR1020 product features will be presented in the ensuing section.
+
+
+\subsection{Machine Learning}
+\label{machine_learning}
+Machine learning (ML), an integral subset of artificial intelligence (AI), equips computational entities with the capability to discern patterns and deduce decisions without explicit programming. ML algorithms sift through data to discern intricate patterns and correlations, harnessing these insights for predictive or decision-making tasks. It's broadly categorized into supervised, unsupervised, and reinforcement learning paradigms. Supervised learning entails training algorithms on labeled data, enabling them to generalize patterns and make accurate predictions on new, unseen data. Unsupervised learning, on the other hand, delves into uncovering hidden patterns within unlabeled data, offering insights into data clustering and dimensionality reduction. Reinforcement learning, meanwhile, is oriented towards dynamic decision-making based on feedback and rewards\cite{ML_paper}. ML's integration with embedded systems has brought forth innovations ranging from autonomous vehicles to smart homes and medical diagnostics. This dissertation will primarily focus on unsupervised and supervised learning, particularly concerning the Self-learning Autonomous Edge Learning and Inferencing Pipeline (AEP)\cite{AEP_paper} I will introduce later on and I will employ for a distributed learning application. In the following sections, a succinct overview of the algorithms used in the AEP is given.
+
+\subsubsection{k-Nearest Neighbors (k-NN)}
+K-NN is a non-parametric and lazy learning technique. Non-parametric means that it makes no explicit assumptions about the form of the data distribution, and lazy learning means that it doesn't learn an explicit model during training.
+ Given a new data point for classification or prediction, it calculates the distance, commonly Euclidean, relative to all dataset points. The 'k' closest points are identified, and the predominant class amongst these neighbors is selected. For regression tasks, an average (or median) value of these neighbors is provided. K-NN's primary applications include situations where data lacks a clear underlying model and as a foundational benchmark for intricate tasks\cite{ML_paper}.
+
+\subsubsection{Euclidean Distance}
+There are many ways to calculate the distance between data points. Since the Euclidean distance will be used further on when talking from the edge ML pipeline to the ensembling approach for the distributed ML, I would also like to define what it is. Euclidean distance, often simply referred to as the "distance formula" in classical geometry, calculates the straight-line distance between two points in Euclidean space. Mathematically, for two points $P(x_1, y_1)$ and $Q(x_2, y_2)$ in a 2-dimensional space, the Euclidean distance is defined as $\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$. This formula can be extended to higher dimensions. In machine learning, Euclidean distance is predominantly used in clustering and classification algorithms, such as k-nearest Neighbors and Kmeans, to find the "closeness" of data points. Compared to other distance measures like Manhattan or Cosine distance, the Euclidean distance is intuitive, preserving the notion of "straight-line" distance between points. It works particularly well when data is densely and uniformly distributed, which is indeed the data that will be used for evaluating the performance of the self-learning pipeline. It can be sensitive to variations in magnitude or scale between features, which is why feature scaling, like normalization, is often recommended before employing algorithms that rely on this distance.
+
+
+\subsubsection{K-means and K-means++}
+K-means is a clustering method that segments a dataset into 'K' distinct, non-overlapping subsets (clusters) based on proximity to centroids\cite{ML_paper}.
+The process entails:
+\begin{enumerate}
+    \item Randomly initialize 'K' centroids.
+    \item Assigning each data point to the nearest centroid cluster.
+    \item Adjusting centroids based on the mean position of their respective clusters.
+    \item Iterating until centroids stabilize or a predefined number of iterations is achieved.
+\end{enumerate}
+
+Kmeans is predominantly used for clustering analyses in various fields like market segmentation, document clustering, image segmentation, and anomaly detection.
+
+Kmeans++ enhances the initialization process of the standard Kmeans, resulting in faster convergence and potentially improved clustering outcomes\cite{kmeans++}.
+The steps of the algorithm are:
+\begin{enumerate}
+    \item Choose the first centroid randomly from the data points.
+    \item For each subsequent centroid, select a data point with a probability proportional to the squared distance from the point to the nearest existing centroid.
+    \item Once all centroids are initialized, proceed with the regular K-means clustering.
+\end{enumerate}
+
+Kmeans++ is used in the same clustering scenarios as Kmeans, but especially in situations where the standard Kmeans' random initialization might converge to a suboptimal solution.
+
+\subsubsection{Decision Trees (DT)}
+Although not utilized here, Decision Trees (DTs) were integrated into the original ML pipeline. A DT resembles a flowchart where decisions based on attributes culminate in class labels or regression values\cite{ML_paper}. The fundamental operation of a DT can be encapsulated as:
+\begin{enumerate}
+    \item Start with the entire dataset at the root.
+    \item Choose an attribute to split the data on. This choice is made using some metrics like information; in the pipeline, they used the Gini impurity.
+    \item Recursively build the tree by repeating the process for each child node using the subset of data that matches the decision.
+    \item The recursion stops when a pure node is achieved or other stopping criteria are met.
+\end{enumerate}
+
+
+
+\subsection{Distributed Machine Learning (DML)}
+\label{DML}
+Distributed machine learning epitomizes a significant leap in data analytics and model training. Born from the need to harness the potency of massive datasets and complex computations, DML deploys a network of interconnected devices or nodes to collaboratively process information and refine models. This approach not only accelerates training times but also enables the handling of data too voluminous for a single machine to manage. DML encompasses a spectrum of paradigms, including data parallelism, model parallelism, and ensemble learning, each optimizing different aspects of the training process\cite{DML_paper}. By fostering data parallelism, model parallelism, and ensemble learning, DML facilitates rapid insights and decision-making in resource-restricted settings.
+
+\subsection{UWB Transceivers in Distributed ML}
+\label{UWB_distrobuted_ML}
+ML has been seamlessly integrated into numerous applications, ranging from data analytics to real-time embedded systems. Distributed machine learning (DML) needs efficient and reliable communication mechanisms. In this context, the utilization of low-power UWB transceivers emerges as a compelling option for DML applications. As can be seen in the technologies comparison in Table 2.1, UWB has several characteristics that fit the DML context. The energy efficiency is relatively high compared to other technologies, and this is especially true for Spark radios, as will be evident in the characterization chapter. Transmission robustness is another characteristic of UWB that helps the development of DML applications, thanks to its high bandwidth and its multipath resistance. Moreover, due to its minimal inference and lack of proximity cross-channel interference, it is also suitable for densely populated setups even with devices possibly employing different communication standards.
+
+
+
+\newpage
+
+
+

@@ -9,4 +9,3 @@ Simulation/Compilation_Strings/*.sh
 Simulation/Logs/*.json
 Simulation/Logs/*.txt
 Ensembling_Aggregation/__pycache__/*.*
-*.json

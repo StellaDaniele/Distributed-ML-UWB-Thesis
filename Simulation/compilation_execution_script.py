@@ -44,7 +44,7 @@ def generate_compilation_strings():
                         if CONFIDENCE:
                             confidence_thr_list = CONF_THR_LIST
                         else:
-                            confidence_thr_list = [0]
+                            confidence_thr_list = [0.0]
                         for CONFIDENCE_THR in confidence_thr_list:
                             # The condition above avoids all the useless cases: when CONFIDENCE=0, CONFIDENCE_THR
                             # is not used by the program
